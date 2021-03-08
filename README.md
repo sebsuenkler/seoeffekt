@@ -13,3 +13,5 @@ Funding period: 05/2019 bis 07/2021
 Funded by: German Research Foundation (DFG – Deutsche Forschungsgemeinschaft), grant number 417552432.
 
 Contacts:  Prof. Dr. Dirk Lewandowski, Sebastian Sünkler, M.A., Sebastian Schultheiß, M.A.
+
+Research data: [OSF](https://osf.io/jyv9r/)
