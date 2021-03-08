@@ -1,4 +1,4 @@
-## Der Effekt der Suchmaschinenoptimierung auf die Suchergebnisse von Web-Suchmaschinen: Modellentwicklung, empirische Überprüfung und Triangulation mit Nutzer/innen- und Expert/inneneinschätzungen (SEO-Effekt)
+### Der Effekt der Suchmaschinenoptimierung auf die Suchergebnisse von Web-Suchmaschinen: Modellentwicklung, empirische Überprüfung und Triangulation mit Nutzer/innen- und Expert/inneneinschätzungen (SEO-Effekt)
 
 The overall goal of the project is to describe and explain the role of search engine optimization from the perspective of the participating stakeholder groups by analysing search results/search result pages for optimized content as well as quantitative and qualitative surveys of search engine users, search engine optimizers and content providers. Thus the external influence on the results of commercial search engines can be described and quantified for the first time. The project contributes to theory building in information science by extending existing information-seeking models by a component of external influence on the search results.
 
@@ -12,6 +12,6 @@ Funding period: 05/2019 bis 07/2021
 
 Funded by: German Research Foundation (DFG – Deutsche Forschungsgemeinschaft), grant number 417552432.
 
-Contacts:  Prof. Dr. Dirk Lewandowski, Sebastian Sünkler, M.A., Sebastian Schultheiß, M.A.
+Contacts: [SearchStudies](https://searchstudies.org)
 
 Research data: [OSF](https://osf.io/jyv9r/)
