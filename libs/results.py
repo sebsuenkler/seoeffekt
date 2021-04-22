@@ -79,9 +79,12 @@ class Results:
 
         return source
 
-    def getResultMeta(url):
+    def getResultMeta(url, study_id, search_engine, query_id):
         meta = []
-        hash = Helpers.computeMD5hash(url)
+        study_id = str(study_id)
+        query_id = str(query_id)
+        compute_hash = url+study_id+search_engine+query_id
+        hash = Helpers.computeMD5hash(compute_hash)
         try:
                 parsed_uri = urlparse(url)
                 #o = urllib.parse.urlsplit(url)
@@ -286,8 +289,47 @@ class Results:
         db.DBDisconnect()
         return rows
 
+    def countResultsbyStudy(studies_id):
+        db = DB()
+        rows = DB_Results.countResultsbyStudy(db.cursor, studies_id)
+        db.DBDisconnect()
+        return rows
 
+    def countResultsbyStudySE(studies_id, se):
+        db = DB()
+        rows = DB_Results.countResultsbyStudySE(db.cursor, studies_id, se)
+        db.DBDisconnect()
+        return rows
 
+    def countResultsQuery(results_queries_id):
+        db = DB()
+        rows = DB_Results.countResultsQuery(db.cursor, results_queries_id)
+        db.DBDisconnect()
+        return rows
+
+    def countClassifiedResultsbyQuery(results_queries_id):
+        db = DB()
+        rows = DB_Results.countClassifiedResultsbyQuery(db.cursor, results_queries_id)
+        db.DBDisconnect()
+        return rows
+
+    def countClassifiedResultsbyStudy(studies_id):
+        db = DB()
+        rows = DB_Results.countClassifiedResultsbyStudy(db.cursor, studies_id)
+        db.DBDisconnect()
+        return rows
+
+    def countClassifiedResultsbyStudySE(studies_id, se):
+        db = DB()
+        rows = DB_Results.countClassifiedResultsbyStudySE(db.cursor, studies_id, se)
+        db.DBDisconnect()
+        return rows
+
+    def countFailedResultsbyStudy(studies_id):
+        db = DB()
+        rows = DB_Results.countFailedResultsbyStudy(db.cursor, studies_id)
+        db.DBDisconnect()
+        return rows
 
     def getPosition(query_id, study_id, search_engine, results_position):
         db = DB()
@@ -330,5 +372,12 @@ class Results:
         db.DBDisconnect()
         return rows
 
-    def deleteResults(cursor, queries_id):
-        pass
+    def deleteResults(queries_id, results_se):
+        db = DB()
+        DB_Results.deleteResults(db.cursor, queries_id, results_se)
+        db.DBDisconnect()
+
+    def deleteResultsNoScrapers(queries_id, results_se):
+        db = DB()
+        DB_Results.deleteResultsNoScrapers(db.cursor, queries_id, results_se)
+        db.DBDisconnect()

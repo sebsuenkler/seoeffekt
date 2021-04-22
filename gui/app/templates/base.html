@@ -1,0 +1,459 @@
+<!doctype html>
+<html>
+<head>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script>$(document).ready(function() {
+   $('#assessment_exp').hide();
+   $('#tools_exp').hide();
+   $('#class_exp').hide();
+   $('#ind_exp').hide();
+
+   $('.div2').click(function(e) {
+     if ($("#assessment_exp").is(":visible") == true) {  $('#assessment_exp').hide();}
+            else { $('#assessment_exp').show(); }
+    });
+
+    $('.div3').click(function(e) {
+      if ($("#tools_exp").is(":visible") == true) {  $('#tools_exp').hide();}
+             else { $('#tools_exp').show(); }
+     });
+
+     $('.div4').click(function(e) {
+       if ($("#class_exp").is(":visible") == true) {  $('#class_exp').hide();}
+              else { $('#class_exp').show(); }
+      });
+
+      $('.div5').click(function(e) {
+        if ($("#ind_exp").is(":visible") == true) {  $('#ind_exp').hide();}
+               else { $('#ind_exp').show(); }
+       });
+
+    });
+  </script>
+
+
+
+<title>SEO Effekt Tool</title>
+<style>
+
+html{
+  background-color: #f5f5f5;
+}
+
+
+.loader {
+ border: 16px solid #f3f3f3; /* Light grey */
+ border-top: 16px solid #3498db; /* Blue */
+ border-radius: 50%;
+ width: 200px;
+ height: 200px;
+ animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+ 0% { transform: rotate(0deg); }
+ 100% { transform: rotate(360deg); }
+}
+
+.green {
+color: green;
+}
+
+.red {
+color: red;
+}
+
+
+
+h1 {
+  font-family: arial;
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 10px;
+}
+
+h2 {
+  font-family: arial;
+  font-size: 18px;
+  font-weight: bold;
+  text-decoration: underline;
+  margin-left: 15px;
+}
+
+
+
+.seo_estimation{
+  padding-left: 10px;
+}
+
+.url_classes{
+  padding-left: 10px;
+}
+
+.seo_indicators{
+  padding-left: 10px;
+}
+
+.tools{
+  padding-left: 10px;
+}
+
+.tool{
+  font-style: normal;
+}
+
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+}
+
+/* Tooltip text */
+.tooltip .tooltiptext {
+  visibility: hidden;
+  width: 350px;
+  background-color: black;
+  color: #fff;
+  text-align: left;
+  padding: 5px 0;
+  padding-left: 5px;
+  margin-left: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+
+  /* Position the tooltip text - see examples below! */
+  position: absolute;
+  z-index: 1;
+}
+
+/* Show the tooltip text when you mouse over the tooltip container */
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+
+.wrapper{
+
+  overflow: hidden;
+  background-color: white;
+  padding-bottom: 30px;
+  -webkit-box-shadow:1px 1px 1px #444 inset,0px 0px 3px #000 inset;
+
+}
+
+.report{
+  width: 90%;
+  -webkit-box-shadow:1px 1px 1px #444 inset,0px 0px 3px #000 inset;
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+
+}
+
+
+.results_form {
+  padding: 10px;
+  width: 600px;
+  overflow: hidden;
+}
+
+
+.content{
+  padding: 20px;
+}
+
+.loader_content{
+  padding-left: 40px;
+  margin-top: 25px;
+}
+
+
+
+.parent {
+display: grid;
+grid-template-columns: 0.2fr 0.8fr 1fr 0.1fr;
+grid-template-rows: auto auto  auto  auto auto auto repeat(6, 1fr);
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+overflow: hidden;
+background-color: white;
+}
+
+.parent_index {
+display: grid;
+grid-template-columns: 0.12fr 1fr 0.1fr;
+grid-template-rows: auto auto  auto  auto auto auto repeat(6, 1fr);
+grid-column-gap: 0px;
+grid-row-gap: 0px;
+overflow: hidden;
+background-color: white;
+}
+
+#app_left {
+  background-color: #284786;
+  font-family: arial;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  padding-bottom: 5px;
+  padding-top: 20px;
+}
+
+#app_header {
+  background-color: #284786;
+  font: arial;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  padding-bottom: 5px;
+  padding-top: 20px;
+}
+
+#app_footer {
+  background-color: #284786;
+  font: arial;
+  font-size: 18px;
+  color: white;
+  text-align: center;
+  padding-bottom: 5px;
+  padding-top: 20px;
+}
+
+.div1 { grid-area: 1 / 1 / 2 / 2; font-size: 20px !important; font-weight: bold !important; padding: 20px;}
+.div2 { grid-area: 2 / 1 / 3 / 2; font-size: 24px !important; border-top: 1px solid white;}
+.div3 { grid-area: 3 / 1 / 4 / 2; font-size: 24px !important; border-top: 1px solid white;}
+.div4 { grid-area: 4 / 1 / 5 / 2; font-size: 24px !important; border-top: 1px solid white;}
+.div5 { grid-area: 5 / 1 / 6 / 2; font-size: 24px !important; border-top: 1px solid white;}
+.div6 { grid-area: 6 / 1 / 7 / 2; font-size: 24px !important; border-top: 1px solid white;}
+
+.div7 { grid-area: 1 / 2 / 2 / 3; font-size: 24px !important; background-color: white;
+
+
+  grid-row-gap: 0px;
+  overflow: hidden;
+  padding-bottom: 25px;
+
+}
+.div8 { grid-area: 2 / 2 / 3 / 3;
+
+
+}
+.div9 { grid-area: 3 / 2 / 4 / 3;
+
+}
+.div10 { grid-area: 4 / 2 / 5 / 3;
+
+}
+.div11 { grid-area: 5 / 2 / 6 / 3;
+
+}
+
+.div12 { grid-area: 6 / 2 / 7 / 3;
+
+  background-color: white;
+
+}
+
+
+.results{
+
+  font-size: 24px;
+  margin-top: 20px;
+  margin-left: 20px;
+  padding-bottom: 20px;
+}
+
+.tool_img{
+  filter: invert(100%) sepia(0%) saturate(7500%) hue-rotate(70deg) brightness(99%) contrast(105%);
+}
+
+.div7_1{
+font-weight: bold;
+font-size: 24px;
+margin-top: 20px;
+margin-left: 20px;
+padding-bottom: 20px;
+}
+
+
+.div7_1 td{
+font-weight: bold;
+font-size: 24px;
+margin-top: 20px;
+margin-left: 20px;
+}
+
+.div7_1 > a{
+  color: #284786 !important;
+  text-decoration: none !important;
+  font-weight: bold !important;
+}
+
+.div7_1 > a:hover{
+  color: black !important;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.div7_2{
+text-align: right;
+padding-right: 30px;
+margin-top: 40px;
+}
+
+.img_row {
+float: left;
+width: 49%;
+margin: auto;
+}
+
+.img_row:hover {
+background-color: black;
+}
+
+.img_row > a {
+  color: white !important;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+.img_row > a:hover{
+  color: white !important;
+  background-color: black !important;
+  text-decoration: none;
+  font-weight: normal;
+}
+
+
+table{
+  border: 10px solid white;
+  box-shadow: -2px -2px 2px #888888;
+  margin: 10px;
+  width: 95%;
+  font-size: 18px;
+
+}
+
+td{
+  background-color: #D8E1EC;
+  color: #284786;
+  height: 40px;
+  padding: 12px;
+}
+
+.td_1{
+width: 35%;
+font-weight: bold;
+}
+
+.td_2{
+width: 5%;
+}
+
+.td_3{
+  width: 60%;
+}
+
+.separator {
+  color: white;
+  background-color: #284786;
+  font-weight: bold;
+}
+
+#assessment_exp {
+  font-size: 20px;
+  margin-left: 30px;
+  padding-bottom: 10px;
+  border: 10px solid white;
+  box-shadow: -2px -2px 2px #888888;
+  background-color: white;
+}
+
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+li {
+  font-size: 20px;
+  font-weight: normal;
+
+}
+
+
+#tools_exp {
+  font-size: 20px;
+  margin-left: 30px;
+  padding-bottom: 10px;
+  border: 10px solid white;
+  box-shadow: -2px -2px 2px #888888;
+  background-color: white;
+}
+
+#class_exp {
+  font-size: 20px;
+  margin-left: 30px;
+  padding-bottom: 10px;
+  border: 10px solid white;
+  box-shadow: -2px -2px 2px #888888;
+  background-color: white;
+}
+
+#ind_exp {
+  font-size: 20px;
+  margin-left: 30px;
+  padding-bottom: 10px;
+  border: 10px solid white;
+  box-shadow: -2px -2px 2px #888888;
+  background-color: white;
+}
+
+#app_left:hover{
+  background-color: black;
+}
+
+.highlight{
+  background-color: #284786;
+  color: white;
+}
+
+input, select{
+  font-size: 20px;
+}
+
+
+label[for="submit"] {
+    display:none;
+}
+
+
+#submit{
+  margin-top: 20px;
+  display: block;
+}
+
+#study_queries {
+        overflow-y: scroll;
+        height: 400px;
+        resize: none; /* Remove this if you want the user to resize the textarea */
+    }
+
+
+#study_description {
+  overflow-y: scroll;
+  height: 100px;
+  resize: none; /* Remove this if you want the user to resize the textarea */
+}
+
+textarea {
+  font-size: 18px;
+}
+
+</style>
+</head>
+<body>
+ {%block content %}{% endblock %}
+</body>
+</html>

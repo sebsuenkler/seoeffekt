@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+
+
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.study_name.label }}<br/>
+        {{ form.study_name(size=64, value=study_name) }}
+        {% if error == 1 %}<br/><span style="color:red">Study already exists. Please select another name for your study</span>{% endif %}
+        <br/><br/>
+        {{ form.study_description.label }}<br/>
+        {{ form.study_description(cols="111", rows="5") }}
+        <br/><br/>
+        {{ form.study_se.label }}<br/>
+        {{ form.study_se(size=64) }}
+
+    </p>
+      <p>{{ form.submit() }}</p>
+
+{% endblock %}

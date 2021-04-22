@@ -18,6 +18,18 @@ class Queries:
 
 #read from db
 
+    def getQueriesStudy(study_id):
+        db = DB()
+        rows = DB_Queries.getQueriesStudy(db.cursor, study_id)
+        db.DBDisconnect()
+        return rows
+
+    def countQueriesStudy(studies_id):
+        db = DB()
+        rows = DB_Queries.countQueriesStudy(db.cursor, studies_id)
+        db.DBDisconnect()
+        return rows
+
 #function to read all queries of a study
     def getQueriesNoScrapers(study_id):
         db = DB()
@@ -32,10 +44,28 @@ class Queries:
         db.DBDisconnect()
         return rows
 
+    def getOpenQueriesStudybySE(study_id, se):
+        db = DB()
+        rows = DB_Queries.getOpenQueriesStudybySE(db.cursor, study_id, se)
+        db.DBDisconnect()
+        return rows
+
+    def getOpenErrrorQueriesStudy(study_id):
+        db = DB()
+        rows = DB_Queries.getOpenErrrorQueriesStudy(db.cursor, study_id)
+        db.DBDisconnect()
+        return rows
+
 #open one specific query
     def getQuery(study_id, query):
         db = DB()
         rows = DB_Queries.getQuery(db.cursor, study_id, query)
+        db.DBDisconnect()
+        return rows
+
+    def getQuerybyID(query_id):
+        db = DB()
+        rows = DB_Queries.getQuerybyID(db.cursor, query_id)
         db.DBDisconnect()
         return rows
 
@@ -46,13 +76,23 @@ class Queries:
         db.DBDisconnect()
         return rows
 
+    def deleteQuery(studies_id, query):
+        db = DB()
+        rows = DB_Queries.deleteQuery(db.cursor, studies_id, query)
+        db.DBDisconnect()
+
+
+    def deleteQuerybyId(studies_id, queries_id):
+        db = DB()
+        rows = DB_Queries.deleteQuerybyId(db.cursor, studies_id, queries_id)
+        db.DBDisconnect()
 
 #write to db
 
 #function to write query to db
-    def insertQuery(study_id, query):
+    def insertQuery(study_id, query, date):
         db = DB()
-        DB_Queries.insertQuery(db.cursor, study_id, query)
+        DB_Queries.insertQuery(db.cursor, study_id, query, date)
         db.DBDisconnect()
 
 #function to write query to db with aditional information

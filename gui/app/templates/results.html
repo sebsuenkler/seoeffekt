@@ -1,0 +1,90 @@
+<p>
+  Statistics
+  <br/>
+
+  <table>
+
+    <tr>
+      <td rowspan="1" colspan="2" class="separator">
+
+      Overview
+
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Progress
+      </td>
+      <td class="td_3">{{ progress }}%
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Search Queries
+      </td>
+      <td class="td_3">{{ count_queries }}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Search Results
+      </td>
+      <td class="td_3">{{ count_results }}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Classified Results
+      </td>
+      <td class="td_3">{{ count_classified }}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Failed Results
+      </td>
+      <td class="td_3">{{ count_failed }}
+      </td>
+    </tr>
+
+    {% for se, values in results.items() %}
+
+    <tr>
+      <td rowspan="1" colspan="2" class="separator">
+
+      {{ se }}
+
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Search Results:
+      </td>
+      <td class="td_3">{{ values['results'] }}
+      </td>
+    </tr>
+
+    <tr>
+      <td class="td_1">Classified Search Results:
+      </td>
+      <td class="td_3">{{ values['class'] }}
+      </td>
+    </tr>
+
+
+
+
+
+    {% endfor %}
+
+
+
+
+  </table>
+
+
+  <a href="javascript:window.location.href=window.location.href"><button>Refresh</button></a>
+
+  <a href="http://deinlinkziel.de"><button>Send Results</button></a>
+
+</p>
