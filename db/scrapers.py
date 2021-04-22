@@ -13,10 +13,26 @@ class Scrapers:
         rows = cursor.fetchall()
         return rows
 
+#read all scaping jobs by progress
+    def getScrapingJobsByProgressSE(cursor, progress, se):
+        sql= "SELECT * from scrapers WHERE scrapers_progress=%s AND scrapers_se =%s ORDER BY RANDOM()"
+        data = (progress, se)
+        cursor.execute(sql,(data))
+        rows = cursor.fetchall()
+        return rows
+
 #read scaping jobs by progress and query
     def getScrapingJobsByQueryProgress(cursor, query_id, progress):
         sql= "SELECT * FROM scrapers WHERE scrapers_queries_id = %s AND scrapers_progress = %s ORDER BY scrapers_start, scrapers_se ASC"
         data = (query_id, progress)
+        cursor.execute(sql,(data))
+        rows = cursor.fetchall()
+        return rows
+
+
+    def getScrapingJobsByQueryProgressSE(cursor, query_id, progress, se):
+        sql= "SELECT * FROM scrapers WHERE scrapers_queries_id = %s AND scrapers_progress = %s AND scrapers_se = %s ORDER BY scrapers_start, scrapers_se ASC"
+        data = (query_id, progress, se)
         cursor.execute(sql,(data))
         rows = cursor.fetchall()
         return rows
@@ -62,6 +78,14 @@ class Scrapers:
             (progress, query_id)
         )
 
+#update status of scraping job by query; important for queries with a limited range of search results
+    def updateScrapingJobQuerySeJobId(cursor, query_id, progress, se, job_id):
+        cursor.execute(
+            "UPDATE scrapers SET scrapers_progress = %s WHERE scrapers_queries_id = %s AND scrapers_se = %s AND scrapers_id >= %s",
+            (progress, query_id, se, job_id)
+        )
+
+
 #update scraping job by query and search engine
     def updateScrapingJobQuerySearchEngine(cursor, query_id, search_engine, progress):
         cursor.execute(
@@ -72,9 +96,11 @@ class Scrapers:
 #reset scraper_jobs
 
     def resetScrapingJobs(cursor):
+
         cursor.execute(
-            "UPDATE scrapers SET scrapers_progress = 0 WHERE scrapers_progress = -1 or scrapers_progress = 2"
+            "DELETE FROM scrapers WHERE scrapers_progress = -1"
         )
+
 
     def getScrapingJobs(cursor, query_id, study_id, search_engine):
         sql= "SELECT scrapers_id FROM scrapers WHERE scrapers_queries_id = %s AND scrapers_studies_id =%s AND scrapers_se = %s"

@@ -7,7 +7,7 @@ from include import *
 tmp = 'tmp/'
 
 
-next = 200000
+next = 2000
 
 
 #Queries Results

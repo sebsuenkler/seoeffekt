@@ -105,6 +105,57 @@ class Results:
         rows = cursor.fetchall()
         return rows
 
+    def countResultsbyStudy(cursor, studies_id):
+        sql = "SELECT COUNT(results_id) FROM results, sources WHERE results_studies_id=%s AND results_hash = sources_hash"
+        data = (studies_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
+    def countResultsbyStudySE(cursor, studies_id, se):
+        sql = "SELECT COUNT(results_id) FROM results, sources WHERE results_studies_id=%s AND results_hash = sources_hash AND results_se =%s"
+        data = (studies_id, se)
+        cursor.execute(sql,(data))
+        rows = cursor.fetchall()
+        return rows
+
+
+    def countClassifiedResultsbyStudy(cursor, studies_id):
+        sql = "SELECT COUNT(DISTINCT classifications_id) FROM classifications, results WHERE classifications_hash = results_hash AND results_studies_id = %s"
+        data = (studies_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
+    def countClassifiedResultsbyStudySE(cursor, studies_id, se):
+        sql = "SELECT COUNT(DISTINCT classifications_id) FROM classifications, results WHERE classifications_hash = results_hash AND results_studies_id = %s AND results_se =%s"
+        data = (studies_id, se)
+        cursor.execute(sql,(data))
+        rows = cursor.fetchall()
+        return rows
+
+    def countFailedResultsbyStudy(cursor, studies_id):
+        sql = "SELECT COUNT(DISTINCT results_id) FROM sources, results WHERE sources_hash = results_hash AND results_studies_id = %s AND sources_source = '-1'"
+        data = (studies_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
+    def countResultsQuery(cursor, results_queries_id):
+        sql = "SELECT COUNT(results_id) FROM results WHERE results_queries_id = %s"
+        data = (results_queries_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
+    def countClassifiedResultsbyQuery(cursor, results_queries_id):
+        sql = "SELECT COUNT(DISTINCT classifications_id) FROM classifications, results WHERE classifications_hash = results_hash AND results_queries_id = %s"
+        data = (results_queries_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
+
     def getResultsIdsByStudyContact(cursor, results_studies_id, results_contact):
         sql= "SELECT * from results WHERE results_studies_id=%s AND results_contact=%s LIMIT 500"
         data = (results_studies_id, results_contact)
@@ -188,6 +239,49 @@ class Results:
     def insertSERP(cursor, query_id, serp, serp_scraper, today):
         cursor.execute("INSERT INTO serps (serps_queries_id, serps_result, serps_scrapers_result, serps_date) VALUES (%s, %s, %s, %s) ON CONFLICT DO NOTHING;", (query_id, serp, serp_scraper, today,))
 
+    def deleteResults(cursor, queries_id, results_se):
 
-    def deleteResults(cursor, queries_id):
-        pass
+        sql= "DELETE FROM sources USING results WHERE results_hash = sources_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM classifications USING results WHERE results_hash = classifications_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM evaluations USING results WHERE results_hash = evaluations_results_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM serps WHERE serps_queries_id = %s AND serps_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE from results WHERE results_queries_id=%s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql="DELETE FROM scrapers WHERE scrapers_queries_id	=%s AND scrapers_se=%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+    def deleteResultsNoScrapers(cursor, queries_id, results_se):
+        sql= "DELETE FROM sources USING results WHERE results_hash = sources_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM classifications USING results WHERE results_hash = classifications_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM evaluations USING results WHERE results_hash = evaluations_results_hash AND results_queries_id = %s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE FROM serps WHERE serps_queries_id = %s AND serps_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))
+
+        sql= "DELETE from results WHERE results_queries_id=%s AND results_se =%s"
+        data = (queries_id, results_se)
+        cursor.execute(sql,(data))    

@@ -78,8 +78,8 @@ def analyze():
 
         seo_plugins = results['plugins']['plugins']
         analytics_tools = results['plugins']['analytics']
-        
-            
+
+
         save_main = main = '{0.netloc}/'.format(urlsplit(url))
         save_main = save_main.replace("/", "")
         save_main = save_main.replace("'", "")
@@ -91,27 +91,27 @@ def analyze():
         save_main = save_main.replace(",", "")
         save_main = save_main.replace(";", "")
         content = results
-        
+
 
         content.update({'Description': 'Most probably optimized: The webpage is most probably optimized when an SEO tool either was found in the HTML code, it is on the list of news services, on the list of customers of SEO agencies, or is on the list with websites with ads, or has at least one microdata.\nProbably optimized: The webpage is not most probably optimized and meets one of the following criteria: (1) It is on the list of shops or business websites, (2) it uses Analytics Tools or advertisement, (3) it uses https, (4) it has SEO indicators in its ro-bots.txt, (5) the website has a sitemap, (6) a viewport is de-fined, (7) it has at least one nofollow link or canonical link, (8) its loading time is less than 3 seconds.\nMost probably not optimized: The main domain is on the list of non-optimized websites.\nProbably not optimized: The webpage is probably not optimized when it is not most probably optimized, it is not classified as not optimized, and it meets at least one of the following criteria: (1) the description tag is empty, (2) the ti-tle tag is empty or identical on subpages, (3) it has no Open Graph tags.'})
-        
-   
-    
+
+
+
         results_folder = "app/results/"
-        
+
         dt = datetime.now() # current date and time
 
         now = dt.strftime("%m_%d_%Y_%H_%M_%S")
-         
-        
+
+
         file = results_folder+now+"_"+save_main
         json_file = file+".json"
-        
+
         json_file_download = now+"_"+save_main+".json"
-        
+
         with open(json_file, 'w+') as outfile:
             json.dump(content, outfile)
-            
+
 
 
         return render_template('analyze.html', title='Results', url=url, results=results, optimized=seo_optimized, not_optimized=seo_not_optimized, m_optimized=seo_likely_optimized, m_not_optimized=seo_likely_not, uncertain=seo_unsure, source_ads = source_ads, source_company = source_company, source_known = source_known, source_news = source_news, source_not_optimized = source_not_optimized, source_shop = source_shop, description=description, site_title = site_title, identical_title = identical, speed=speed, https=https, robots=robots, viewport=viewport, micros = micros, nofollow = nofollow, canonicals=canonicals, seo_plugins=seo_plugins, analytics_tools=analytics_tools)
@@ -140,38 +140,36 @@ def report():
     save_main = save_main.replace(";", "")
     results = results.replace("'",'"')
     content = json.loads(results)
-    
+
 
     content.update({'Description': 'Most probably optimized: The webpage is most probably optimized when an SEO tool either was found in the HTML code, it is on the list of news services, on the list of customers of SEO agencies, or is on the list with websites with ads, or has at least one microdata.\nProbably optimized: The webpage is not most probably optimized and meets one of the following criteria: (1) It is on the list of shops or business websites, (2) it uses Analytics Tools or advertisement, (3) it uses https, (4) it has SEO indicators in its ro-bots.txt, (5) the website has a sitemap, (6) a viewport is de-fined, (7) it has at least one nofollow link or canonical link, (8) its loading time is less than 3 seconds.\nMost probably not optimized: The main domain is on the list of non-optimized websites.\nProbably not optimized: The webpage is probably not optimized when it is not most probably optimized, it is not classified as not optimized, and it meets at least one of the following criteria: (1) the description tag is empty, (2) the ti-tle tag is empty or identical on subpages, (3) it has no Open Graph tags.'})
-    
-   
-    
+
+
+
     results_folder = "app/results/"
-    
+
     dt = datetime.now() # current date and time
 
     now = dt.strftime("%m_%d_%Y_%H_%M_%S")
-     
 
-    
+
+
     file = results_folder+now+"_"+save_main
     json_file = file+".json"
-    
+
     json_file_download = now+"_"+save_main+".json"
-    
+
     with open(json_file, 'w+') as outfile:
         json.dump(content, outfile)
-        
-    csv_file = file+".csv"
-        
-    df = pd.read_json(json_file, typ='series', convert_dates=False)
-    
-    df.to_csv(csv_file)
-    
-  
-    csv_file_download = now+"_"+save_main+".csv"
-    
-    
-    return send_from_directory("/home/sebastian/alpha/demo/app/results/", csv_file_download, as_attachment=True)
 
-    
+    csv_file = file+".csv"
+
+    df = pd.read_json(json_file, typ='series', convert_dates=False)
+
+    df.to_csv(csv_file)
+
+
+    csv_file_download = now+"_"+save_main+".csv"
+
+
+    return send_from_directory("/home/sebastian/alpha/demo/app/results/", csv_file_download, as_attachment=True)

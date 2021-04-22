@@ -70,7 +70,7 @@ class Evaluations:
     def UpdateEvaluationResult(cursor, value, date, hash, module):
         cursor.execute(
             "UPDATE evaluations SET evaluations_result= %s, evaluations_date = %s WHERE evaluations_results_hash = %s and evaluations_module = %s",
-            (value, date, hash, module,)
+            (value, date, hash, module)
         )
 
     def insertClassificationResult(cursor, hash, result, date):

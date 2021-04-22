@@ -7,7 +7,11 @@ def url_length(hash, result_url):
     value = '-1'
     module = 'check url_length'
 
+
+
     result_url = result_url.replace("www.", "")
+
+    url = result_url
 
     if (Helpers.matchText(result_url, "https://*")):
         url = result_url.replace("https://", "")

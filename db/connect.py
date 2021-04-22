@@ -4,7 +4,7 @@ import psycopg2
 import json
 import os
 
-config_path = 'path/to/configfile'
+config_path = '/home/your_path/alpha/config/'
 
 with open(config_path+'db.ini', 'r') as f:
     array = json.load(f)
