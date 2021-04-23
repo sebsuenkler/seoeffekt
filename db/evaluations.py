@@ -39,7 +39,7 @@ class Evaluations:
         rows = cursor.fetchall()
         return rows
 
-#read hashes with 53 indicators and pagespeed
+#read hashes with indicators and pagespeed
     def getResultstoClassify(cursor, indicators):
 
         #sql = "SELECT results_hash, results_url, results_main, sources_speed FROM results left join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash JOIN evaluations ON results_hash = evaluations_results_hash WHERE classifications_hash IS NULL AND sources_speed IS NOT NULL GROUP BY 1,2,3,4 HAVING COUNT(evaluations_module) >= %s"
@@ -73,13 +73,13 @@ class Evaluations:
             (value, date, hash, module)
         )
 
-    def insertClassificationResult(cursor, hash, result, date):
-        cursor.execute("INSERT INTO classifications VALUES(%s,%s,%s) ON CONFLICT DO NOTHING;", (hash, result, date,))
+    def insertClassificationResult(cursor, hash, result, classifications_classification, today):
+        cursor.execute("INSERT INTO classifications (classifications_hash, classifications_result, classifications_classification, classifications_date) VALUES(%s,%s,%s,%s) ON CONFLICT DO NOTHING;", (hash, result, classifications_classification, today,))
 
-    def getClassificationResult(cursor, hash):
-        sql = "SELECT classifications_id FROM classifications WHERE classifications_hash = %s LIMIT 1"
-        data = (hash)
-        cursor.execute(sql,(data,))
+    def getClassificationResult(cursor, hash, classifications_classification):
+        sql = "SELECT classifications_id FROM classifications WHERE classifications_hash = %s AND classifications_classification = %s LIMIT 1"
+        data = (hash, classifications_classification)
+        cursor.execute(sql,data)
         rows = cursor.fetchall()
         return rows
 

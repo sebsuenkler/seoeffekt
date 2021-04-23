@@ -218,7 +218,7 @@ class Results:
 
 
     def getSourcesSpeedNULL(cursor):
-        sql = "select distinct ON(sources_hash) sources_hash, results_url from sources, results TABLESAMPLE SYSTEM_ROWS(20000) where results_hash = sources_hash and sources_source IS NOT NULL and sources_source !='0' and sources_speed IS NULL"
+        sql = "select distinct ON(sources_hash) sources_hash, results_url from sources, results TABLESAMPLE SYSTEM_ROWS(2000) where results_hash = sources_hash and sources_source IS NOT NULL and sources_source !='0' and sources_speed IS NULL"
         cursor.execute(sql)
         rows = cursor.fetchall()
         return rows
@@ -284,4 +284,4 @@ class Results:
 
         sql= "DELETE from results WHERE results_queries_id=%s AND results_se =%s"
         data = (queries_id, results_se)
-        cursor.execute(sql,(data))    
+        cursor.execute(sql,(data))
