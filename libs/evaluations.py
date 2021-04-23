@@ -67,9 +67,9 @@ class Evaluations:
         return rows
 
 
-    def getClassificationResult(hash):
+    def getClassificationResult(hash, classifications_classification):
         db = DB()
-        rows = DB_Evaluations.getClassificationResult(db.cursor, hash)
+        rows = DB_Evaluations.getClassificationResult(db.cursor, hash, classifications_classification)
         db.DBDisconnect()
         return rows
 
@@ -88,9 +88,9 @@ class Evaluations:
         DB_Evaluations.UpdateEvaluationResult(db.cursor, value, date, hash, module)
         db.DBDisconnect()
 
-    def insertClassificationResult(hash, result, today):
+    def insertClassificationResult(hash, result, classifications_classification, today):
         db = DB()
-        DB_Evaluations.insertClassificationResult(db.cursor, hash, result, today)
+        DB_Evaluations.insertClassificationResult(db.cursor, hash, result, classifications_classification, today)
         db.DBDisconnect()
 
 #delete from db

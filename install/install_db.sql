@@ -24,7 +24,7 @@ CREATE EXTENSION IF NOT EXISTS tablefunc WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION tablefunc; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION tablefunc IS 'functions that manipulate whole tables, including crosstab';
@@ -38,7 +38,7 @@ CREATE EXTENSION IF NOT EXISTS tsm_system_rows WITH SCHEMA public;
 
 
 --
--- Name: EXTENSION tsm_system_rows; Type: COMMENT; Schema: -; Owner:
+-- Name: EXTENSION tsm_system_rows; Type: COMMENT; Schema: -; Owner: 
 --
 
 COMMENT ON EXTENSION tsm_system_rows IS 'TABLESAMPLE method which accepts number of rows as a limit';
@@ -291,7 +291,8 @@ CREATE TABLE public.serps (
     serps_result text,
     serps_scrapers_result integer,
     serps_date date,
-    serps_id integer NOT NULL
+    serps_id integer NOT NULL,
+    serps_se text
 );
 
 
@@ -478,6 +479,14 @@ ALTER TABLE ONLY public.queries
 
 
 --
+-- Name: queries queries_queries_studies_id_queries_query_key; Type: CONSTRAINT; Schema: public; Owner: seo
+--
+
+ALTER TABLE ONLY public.queries
+    ADD CONSTRAINT queries_queries_studies_id_queries_query_key UNIQUE (queries_studies_id, queries_query);
+
+
+--
 -- Name: results results_pkey; Type: CONSTRAINT; Schema: public; Owner: seo
 --
 
@@ -550,3 +559,4 @@ CREATE INDEX indx002 ON public.results USING btree (results_hash);
 --
 -- PostgreSQL database dump complete
 --
+
