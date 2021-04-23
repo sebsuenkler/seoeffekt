@@ -6,6 +6,12 @@ from include import *
 import urllib.request
 from urllib.error import HTTPError
 
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.firefox.options import Options
+import time
+
+
 
 def get_results():
     hashes = Results.getSourcesSpeedNULL()
@@ -16,8 +22,6 @@ def pagespeed(hash, url):
 
     check = Sources.getSpeed(hash)
     speed = -1
-
-
 
     if not check[0][0]:
         print(url)
@@ -32,61 +36,57 @@ def pagespeed(hash, url):
 
             Results.insertSpeed(hash, '-100')
 
+            os.environ['MOZ_HEADLESS'] = '0'
+            options = Options()
+            #options.add_argument('--ignore-certificate-errors-spki-list')
+            #options.add_argument('--ignore-ssl-errors')
+            #options.add_argument('--ignore-certificate-errors')
+            #options.add_argument('--allow-insecure-localhost')
+
+            options.log.level = 'error'
+
+            profile = webdriver.FirefoxProfile()
+
+
+
+            profile.add_extension(extension='/home/sebastian/alpha/extensions/i_dont_care_about_cookies-3.2.7-an+fx.xpi')
+
+            driver = webdriver.Firefox(firefox_profile=profile, options=options)
+
+            driver.set_page_load_timeout(60)
+
+
             try:
-                urllib.request.urlretrieve(url)
+                driver.get(url)
+                time.sleep(10)
+                ''' Use Navigation Timing  API to calculate the timings that matter the most '''
 
-            except:
+                navigationStart = driver.execute_script("return window.performance.timing.navigationStart")
+                responseStart = driver.execute_script("return window.performance.timing.responseStart")
+                domComplete = driver.execute_script("return window.performance.timing.domComplete")
+                loadStart = driver.execute_script("return window.performance.timing.domInteractive")
+                EventEnd = driver.execute_script("return window.performance.timing.loadEventEnd")
 
-                Results.insertSpeed(hash, speed)
+
+                ''' Calculate the performance'''
+                backendPerformance_calc = responseStart - navigationStart
+                frontendPerformance_calc = domComplete - responseStart
+                loadingTime = EventEnd - navigationStart
+                speed = loadingTime / 1000
 
                 print(speed)
+                driver.quit()
+                Results.insertSpeed(hash, speed)
 
-            else:
-                try:
-                    options = Options()
-                    options.add_argument('--ignore-certificate-errors-spki-list')
-                    options.add_argument('--ignore-ssl-errors')
-                    options.add_argument('--ignore-certificate-errors')
-                    options.add_argument('--allow-insecure-localhost')
-                    options.add_argument('--disable-extensions')
-                    options.add_argument('--no-sandbox')
-                    options.add_argument('-headless')
-                    options.log.level = 'error'
-                    options.headless = True
-
-                    driver = webdriver.Firefox(options=options)
-                    driver.set_page_load_timeout(20)
-                    driver.set_script_timeout(20)
-                    driver.get(url)
-
-
-                    speed = driver.execute_script(
-                                """
-                                var loadTime = ((window.performance.timing.domComplete- window.performance.timing.navigationStart)/1000);
-                                return loadTime;
-                                """
-                                    )
-                    driver.quit()
+            except:
+                print(speed)
+                Results.insertSpeed(hash, speed)
+                driver.quit()
 
 
 
-                    Results.insertSpeed(hash, speed)
-
-                    print(speed)
-
-                except Exception as e:
-                    driver.quit()
-                    Results.insertSpeed(hash, speed)
-
-                    #exit()
-
-        else:
-            Results.insertSpeed(hash, speed)
-            print(speed)
 
 results = get_results()
-
-print(results)
 
 for r in results:
     hash = r[0]
