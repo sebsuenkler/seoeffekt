@@ -7,7 +7,37 @@ from include import *
 tmp = 'tmp/'
 
 
-next = 100000
+next = 80000
+
+#Queries Results
+
+'''
+db = DB()
+
+cur = db.cursor
+
+csv_file = 'queries.csv'
+
+csv_header = 'queries_id,query'
+
+with open(tmp+csv_file,'w+') as f:
+    f.write(csv_header)
+f.close()
+
+save_res = ""
+
+build_res = ""
+query_id = "0"
+query = "import"
+
+build_res = query_id+','+query
+
+save_res = '\n'+build_res
+
+with open(tmp+csv_file,'a+') as f:
+    f.write(save_res)
+f.close()
+
 
 
 #Queries Results
@@ -26,7 +56,7 @@ f.close()
 
 save_res = ""
 
-sql = "select queries_id, queries_query from queries ORDER BY queries_id"
+sql = "select queries_id, queries_query from queries where queries_studies_id= 5 ORDER BY queries_id"
 
 print(sql)
 
@@ -51,7 +81,6 @@ for er in rows:
 db.DBDisconnect()
 
 
-
 #Evaluations Results
 
 db = DB()
@@ -68,7 +97,7 @@ f.close()
 
 save_res = ""
 
-sql = "SELECT count(evaluations_id) from evaluations"
+sql = "SELECT count(evaluations_results_hash) from evaluations, results where evaluations_results_hash = results_hash AND results_studies_id = 5"
 
 cur.execute(sql)
 
@@ -90,7 +119,7 @@ for i in range(0, counter):
 
     cur = db.cursor
 
-    sql = "SELECT distinct(evaluations_results_hash), evaluations_module, evaluations_result from evaluations ORDER BY evaluations_results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+    sql = "SELECT (evaluations_results_hash, evaluations_module, evaluations_result) from evaluations, results WHERE evaluations_results_hash = results_hash AND results_studies_id = 5 GROUP BY 1 offset "+str(offset)+" fetch next "+str(next)+" rows only"
 
     print(sql)
 
@@ -103,11 +132,15 @@ for i in range(0, counter):
     offset = offset + next
 
     for row in rows:
+        row = row[0].split(',')
         value = ""
         build_res = ""
         hash = str(row[0])
+        hash = hash[1:]
         module = str(row[1])
+
         value = str(row[2])
+        value = value[:-1]
 
         build_res = hash+','+module+','+value
 
@@ -116,7 +149,6 @@ for i in range(0, counter):
         with open(tmp+csv_file,'a+') as f:
             f.write(save_res)
         f.close()
-
 
 
 
@@ -140,7 +172,7 @@ i = 0
 
 save_res = ""
 
-sql = "SELECT count(classifications_id) from classifications"
+sql = "SELECT count(distinct classifications_hash) from classifications, results where classifications_hash = results_hash AND results_studies_id = 5"
 
 cur.execute(sql)
 
@@ -162,7 +194,7 @@ for i in range(0, counter):
 
     cur = db.cursor
 
-    sql = "SELECT distinct(classifications_hash), classifications_result from classifications ORDER BY classifications_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+    sql = "SELECT distinct(classifications_hash, classifications_result) from classifications, results where classifications_hash = results_hash AND results_studies_id = 5 GROUP BY 1 offset "+str(offset)+" fetch next "+str(next)+" rows only"
 
     print(sql)
 
@@ -175,10 +207,13 @@ for i in range(0, counter):
     offset = offset + next
 
     for row in rows:
+        row = row[0].split(',')
         value = ""
         build_res = ""
         hash = str(row[0])
+        hash = hash[1:]
         value = str(row[1])
+        value = value[:-1]
 
         build_res = hash+','+value
 
@@ -190,8 +225,8 @@ for i in range(0, counter):
 
 
 
-
-
+'''
+'''
 #Results Results
 
 db = DB()
@@ -212,7 +247,7 @@ offset = 0
 
 i = 0
 
-sql = "SELECT count(results_id) from results"
+sql = "SELECT count(distinct results_hash) from results where results_studies_id = 5"
 
 cur.execute(sql)
 
@@ -230,7 +265,105 @@ for i in range(0, counter):
 
     cur = db.cursor
 
-    sql = "select results_id, results_studies_id, results_position, results_queries_id, results_url, results_main, results_se, results_hash from results ORDER BY results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+    #sql = "select distinct(results_hash, results_studies_id, results_position, results_queries_id, results_id, results_main, results_se, results_url) from results where results_studies_id = 5 GROUP BY 1 offset "+str(offset)+" fetch next "+str(next)+" rows only"
+
+    sql = "select distinct(results_hash, results_main, results_url) from results where results_studies_id = 5 GROUP BY 1 offset "+str(offset)+" fetch next "+str(next)+" rows only"
+
+
+    print(sql)
+
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    db.DBDisconnect()
+
+    offset = offset + next
+
+    connection = None
+
+    for er in rows:
+        er = er[0].split(',')
+        build_res = ""
+        #results_id = str(er[4])
+        results_id = "1"
+        #study = str(er[1])
+        study = "5"
+        #results_pos = str(er[2])
+        results_pos = "0"
+        #query_id = str(er[1])
+        query_id = "0"
+        url = str(er[2])
+        url = url[:-1]
+        url = '"'+url+'"'
+        main = str(er[1])
+        main = '"'+main+'"'
+        #se = str(er[6])
+        se = "Google"
+        hash = str(er[0])
+        hash = hash[1:]
+
+
+        build_res = study+','+results_id+','+results_pos+','+query_id+','+url+','+main+','+se+','+hash
+
+        save_res = '\n'+build_res
+
+        with open(tmp+csv_file,'a+') as f:
+            f.write(save_res)
+        f.close()
+
+
+
+#Results Speed
+
+db = DB()
+
+cur = db.cursor
+
+save_res = ""
+
+csv_file = 'speed.csv'
+
+csv_header = 'hash,speed,source'
+
+
+with open(tmp+csv_file,'w+') as f:
+    f.write(csv_header)
+f.close()
+
+
+offset = 0
+
+next = 1000
+
+i = 0
+
+sql = "SELECT count(distinct sources_hash) from sources, results where sources_hash = results_hash AND results_studies_id = 5 LIMIT 10000"
+
+print(sql)
+
+cur.execute(sql)
+
+rows = cur.fetchall()
+
+db.DBDisconnect()
+
+counter = rows[0][0]
+
+counter = int(round(counter+0.5) / next) + 1
+
+counter = 10
+
+
+for i in range(0, counter):
+
+    db = DB()
+
+    cur = db.cursor
+
+    sql = "select distinct(sources_hash), sources_speed, sources_source from sources, results where sources_hash = results_hash AND results_studies_id = 5 GROUP BY 1,2,3 offset "+str(offset)+" fetch next "+str(next)+" rows only"
+
+    print(i)
 
     print(sql)
 
@@ -246,101 +379,53 @@ for i in range(0, counter):
 
     for er in rows:
 
+
         build_res = ""
-        results_id = str(er[0])
-        study = str(er[1])
-        results_pos = str(er[2])
-        query_id = str(er[3])
-        url = str(er[4])
-        url = '"'+url+'"'
-        main = str(er[5])
-        main = '"'+main+'"'
-        se = str(er[6])
-        hash = str(er[7])
+        hash = str(er[0])
 
+        speed = str(er[1])
 
-        build_res = study+','+results_id+','+results_pos+','+query_id+','+url+','+main+','+se+','+hash
+        source = str(er[2])
+
+        source = Helpers.html_escape(source)
+
+        source = source.replace(",", "&#009")
+        source = source.replace("\n", "")
+        source = source.replace("\r", "")
+        source = '"'+source+'"'
+        build_res = hash+','+speed+','+source
 
         save_res = '\n'+build_res
 
         with open(tmp+csv_file,'a+') as f:
             f.write(save_res)
         f.close()
-
-
-
-
-
-
-#Results Speed
 
 db = DB()
 
 cur = db.cursor
 
-save_res = ""
+csv_file = 'queries.csv'
 
-csv_file = 'speed.csv'
-
-csv_header = 'hash,speed'
-
+csv_header = 'queries_id,query'
 
 with open(tmp+csv_file,'w+') as f:
     f.write(csv_header)
 f.close()
 
+save_res = ""
 
-offset = 0
+build_res = ""
+query_id = "0"
+query = "import"
 
-i = 0
+build_res = query_id+','+query
 
-sql = "SELECT count(sources_id) from sources"
+save_res = '\n'+build_res
 
-cur.execute(sql)
-
-rows = cur.fetchall()
-
-db.DBDisconnect()
-
-counter = rows[0][0]
-
-counter = int(round(counter+0.5) / next) + 1
-
-for i in range(0, counter):
-
-    db = DB()
-
-    cur = db.cursor
-
-    sql = "select distinct(sources_hash), sources_speed from sources ORDER BY sources_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    connection = None
-
-    for er in rows:
-
-        build_res = ""
-        hash = str(er[0])
-        speed = str(er[1])
-
-
-        build_res = hash+','+speed
-
-        save_res = '\n'+build_res
-
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
-
-
-
+with open(tmp+csv_file,'a+') as f:
+    f.write(save_res)
+f.close()
 
 print("Load: results.csv")
 print("\n")
@@ -364,6 +449,7 @@ print("Load: classifications.csv")
 print("\n")
 
 classfications_df = pd.read_csv(tmp+'classifications.csv', error_bad_lines=False, low_memory=False)
+
 
 
 print("Load: evaluations.csv")
@@ -401,38 +487,35 @@ print("\n")
 
 results_speed_evaluations_queries_classifications_merged = results_speed_evaluations_queries_merged.merge(classfications_df, left_on='hash', right_on='hash')
 
-#print(results_speed_evaluations_queries_merged.iloc[3])
 
-#print(results_speed_evaluations_queries_merged)
 
-print("Save: seo_results.csv")
+print(results_speed_evaluations_queries_merged)
+
+print("Save: seo_results_source.csv")
 print("\n")
 
 
-results_speed_evaluations_queries_classifications_merged.to_csv(r'seo_results.csv', index = False)
+results_speed_evaluations_queries_classifications_merged.to_csv(r'seo_results_source.csv', index = False)
 
 #results_speed_evaluations_queries_merged.to_csv(r'seo_results.csv', index = False)
 
 print("Finished")
 print("\n")
-
-
-
+'''
 
 
 tools = ['tools analytics', 'tools caching', 'tools seo', 'tools content', 'tools social', 'tools ads']
 
-csv_header = 'Study,ID,Hash,Position,Query_ID,Query,URL,Main,Search Engine,Speed,Classification,check canonical,check description,check external links,check h1,check https,check internal links,check kw_count,check kw_density,check kw_in_description-og-name,check kw_in_description-og-property,check kw_in_href,check kw_in_link-text,check kw_in_meta-content,check kw_in_meta-description,check kw_in_meta-og,check kw_in_meta-properties,check kw_in_source,check kw_in_title,check kw_in_title-meta,check kw_in_title-og,check kw_in_url,check nofollow,check og,check sitemap,check title,check title_h1_identical,check title_h1_match,check url_length,check viewport,check word_count,check wordpress,micros,micros counter,robots_txt,source ads,source company,source known,source news,source not optimized,source search engine,source shop,source top,tools ads,tools ads count,tools analytics,tools analytics count,tools caching,tools caching count,tools content,tools content count,tools seo,tools seo count,tools social,tools social count'
+csv_header = 'Study,ID,Hash,Position,Query_ID,Query,URL,Main,Search Engine,Speed,Source,Classification,check canonical,check description,check external links,check h1,check https,check internal links,check kw_count,check kw_density,check kw_in_description-og-name,check kw_in_description-og-property,check kw_in_href,check kw_in_link-text,check kw_in_meta-content,check kw_in_meta-description,check kw_in_meta-og,check kw_in_meta-properties,check kw_in_source,check kw_in_title,check kw_in_title-meta,check kw_in_title-og,check kw_in_url,check nofollow,check og,check sitemap,check title,check title_h1_identical,check title_h1_match,check url_length,check viewport,check word_count,check wordpress,micros,micros counter,robots_txt,source ads,source company,source known,source news,source not optimized,source search engine,source shop,source top,tools ads,tools ads count,tools analytics,tools analytics count,tools caching,tools caching count,tools content,tools content count,tools seo,tools seo count,tools social,tools social count'
 
 db_modules = ['check canonical','check description','check external links','check h1','check https','check internal links','check kw_count','check kw_density','check kw_in_href','check kw_in_link-text','check kw_in_meta-content','check kw_in_meta-description','check kw_in_meta-og','check kw_in_meta-properties','check kw_in_source','check kw_in_title','check kw_in_title-meta','check kw_in_title-og','check kw_in_description-og-property','check kw_in_description-og-name','check kw_in_url','check nofollow','check og','check sitemap','check title','check title_h1_identical','check title_h1_match','check url_length','check viewport','check word_count','check wordpress','micros','micros counter','robots_txt', 'source ads','source company','source known','source news','source not optimized','source shop', 'source search engine','source top', 'tools ads','tools ads count','tools analytics','tools analytics count','tools caching','tools caching count','tools content','tools content count','tools seo','tools seo count','tools social','tools social count']
-
 
 db_modules = sorted(db_modules, key=str.lower)
 
 
 save_res = ""
 
-csv_file = 'merged_results_19052021csv'
+csv_file = 'merged_results_import_sources.csv'
 
 
 with open(csv_file,'w+') as f:
@@ -441,7 +524,7 @@ f.close()
 
 
 
-file = 'seo_results.csv'
+file = 'seo_results_source.csv'
 
 #eval_results = pd.read_csv(file, error_bad_lines=False, skiprows=0, nrows=10000)
 
@@ -484,14 +567,19 @@ queries_id                                                         1608
 
 ['results_studies_id', 'results_id', 'results_position', 'results_queries_id', 'results_url', 'results_main', 'results_se', 'hash', 'speed', 'module', 'result', 'queries_id', 'query', 'class']
 
+['results_studies_id', 'results_id', 'results_position', 'results_queries_id', 'results_url', 'results_main', 'results_se', 'hash', 'speed', 'source', 'module', 'result', 'queries_id', 'query', 'class']
+
 '''
 
-#print(list(eval_results.columns))
+print(list(eval_results.columns))
 
 print("Write to CSV")
 
 
+
 for index, row in eval_results.iterrows():
+    print(row)
+
     build_res = ""
     hash = str(row[7])
 
@@ -499,11 +587,11 @@ for index, row in eval_results.iterrows():
     study = str(row[0])
     results_id = str(row[1])
     results_pos = str(row[2])
-    queries_query = '"'+row[12]+'"'
+    queries_query = '"'+row[13]+'"'
 
     result_class = ''
-
-    result_class = '"'+row[13]+'"'
+    row[14] = str(row[14])
+    result_class = '"'+row[14]+'"'
 
 
 
@@ -521,8 +609,9 @@ for index, row in eval_results.iterrows():
 
     speed = str(row[8])
 
+    source = str(row[9])
 
-    modules = row[9]
+    modules = row[10]
 
     #print(modules)
 
@@ -542,7 +631,7 @@ for index, row in eval_results.iterrows():
         m.append(x)
 
 
-    results = row[10]
+    results = row[11]
 
     results = results.replace('"','')
     results = results.replace('[','')
@@ -590,7 +679,7 @@ for index, row in eval_results.iterrows():
 
 
 
-    build_res = study+','+results_id+','+hash+','+results_pos+','+query_id+','+queries_query+','+url+','+main+','+se+','+speed+','+result_class+','
+    build_res = study+','+results_id+','+hash+','+results_pos+','+query_id+','+queries_query+','+url+','+main+','+se+','+speed+','+source+','+result_class+','
 
     lh_values = []
     lh_results = ''

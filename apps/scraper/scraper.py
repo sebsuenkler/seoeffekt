@@ -192,7 +192,7 @@ try:
 
                 for ts in to_scrape:
 
-                    if ts !="Bing_API" and ts !="Google_Selenium":
+                    if ts !="Bing_API" and ts !="Google_Selenium" and ts !="Google_Selenium_SV":
 
                         queries = get_queries(study_id)
 

@@ -91,7 +91,7 @@ def scrape_query(query, scraper):
 
         driver = webdriver.Firefox(firefox_profile=profile, options=options)
 
-        driver.get('http://www.google.de')
+        driver.get('https://www.google.com/webhp?hl=sv')
 
 
 
@@ -249,8 +249,8 @@ try:
     studies = Studies.getStudiesScraper()
 
     for s in studies:
-        if  s[-1] == "Google_Selenium":
-            scraper = "Google_Selenium"
+        if s[-1] == "Google_Selenium_SV":
+            scraper = "Google_Selenium_SV"
 
             studies_id = s[-3]
 

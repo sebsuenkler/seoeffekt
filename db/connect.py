@@ -16,7 +16,7 @@ password = array['password']
 
 
 db_connection = ("dbname='"+dbname+"' user='"+user+"' host='"+host+"' " + \
-                  "password='"+password+"'")
+                  "password='"+password+"' connect_timeout=3000")
 
 
 class DB:

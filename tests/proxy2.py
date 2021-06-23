@@ -1,17 +1,30 @@
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.common.proxy import Proxy, ProxyType
+
 
 import time
 
 import os
 
 def saveResult(url):
-    #os.environ['MOZ_HEADLESS'] = '0'
+    myProxy = "201.231.4.191:4153"
+
+    proxy = Proxy({
+        'proxyType': ProxyType.MANUAL,
+        'httpProxy': myProxy,
+        'ftpProxy': myProxy,
+        'sslProxy': myProxy,
+        'noProxy': '' # set this value as desired
+        })
+
+
+    os.environ['MOZ_HEADLESS'] = '0'
     options = Options()
-    options.add_argument('--ignore-certificate-errors-spki-list')
-    options.add_argument('--ignore-ssl-errors')
-    options.add_argument('--ignore-certificate-errors')
+    #options.add_argument('--ignore-certificate-errors-spki-list')
+    #options.add_argument('--ignore-ssl-errors')
+    #options.add_argument('--ignore-certificate-errors')
     #options.add_argument('--allow-insecure-localhost')
     options.add_argument("user-data-dir=selenium")
     options.log.level = 'error'
@@ -28,21 +41,9 @@ def saveResult(url):
 
     profile.add_extension(extension='/home/sebastian/alpha/extensions/i_dont_care_about_cookies-3.2.7-an+fx.xpi')
 
-    firefox_capabilities = webdriver.DesiredCapabilities.FIREFOX
-    firefox_capabilities['marionette'] = True
+    driver = webdriver.Firefox(firefox_profile=profile, options=options, proxy=proxy)
 
-    PROXY = "51.178.215.230:1234"
-
-    firefox_capabilities['proxy'] = {
-        "proxyType": "MANUAL",
-        "httpProxy": PROXY,
-        "ftpProxy": PROXY,
-        "sslProxy": PROXY
-    }
-
-    driver = webdriver.Firefox(capabilities=firefox_capabilities)
-
-    driver.set_page_load_timeout(120)
+    driver.set_page_load_timeout(60)
 
     try:
         driver.get(url)
@@ -58,9 +59,9 @@ def saveResult(url):
 
     return source
 
-url = "https://www.show-my-ip.de/ipadresse/"
+#url = "https://www.show-my-ip.de/ipadresse/"
 
-#url = "https://www.google.de/search?q=merkel&start=20&lr=lang_de&cr=countryDE"
+url = "https://www.show-my-ip.de/ipadresse/"
 
 s = saveResult(url)
 

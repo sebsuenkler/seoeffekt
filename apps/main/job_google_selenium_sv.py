@@ -11,7 +11,7 @@ job_defaults = {
 
 def job():
     os.chdir('../scraper/')
-    os.system('python3 google_selenium.py')
+    os.system('python3 google_selenium_sv.py')
 
 if __name__ == '__main__':
     scheduler = BackgroundScheduler(job_defaults=job_defaults)

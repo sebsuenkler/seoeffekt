@@ -483,3 +483,9 @@ class Scrapers:
         db = DB()
         DB_Scrapers.getScrapingJobs(db.cursor, query_id, study_id, search_engine)
         db.DBDisconnect()
+
+    def getScrapingJobsByStudyQueries(study):
+        db = DB()
+        rows = DB_Scrapers.getScrapingJobsByStudyQueries(db.cursor, study)
+        db.DBDisconnect()
+        return rows

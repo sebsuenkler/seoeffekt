@@ -1,16 +1,23 @@
 #background scheduler for scraping
 import sys
-sys.path.insert(0, '..')
-from include import *
+import os
+import time
+
+
+
+#processing libraries
+import threading
+from subprocess import call
+from datetime import datetime
+from apscheduler.schedulers.background import BackgroundScheduler
 
 
 job_defaults = {
     'coalesce': False,
-    'max_instances': 3
+    'max_instances': 1
 }
 
 def job():
-    os.chdir('../scraper/')
     os.system('python3 google_selenium.py')
 
 if __name__ == '__main__':

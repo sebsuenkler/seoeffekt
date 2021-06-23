@@ -7,10 +7,38 @@ from include import *
 tmp = 'tmp/'
 
 
-next = 100000
 
 
 #Queries Results
+
+'''
+db = DB()
+
+cur = db.cursor
+
+csv_file = 'queries.csv'
+
+csv_header = 'queries_id,query'
+
+with open(tmp+csv_file,'w+') as f:
+    f.write(csv_header)
+f.close()
+
+save_res = ""
+
+build_res = ""
+query_id = "0"
+query = "import"
+
+build_res = query_id+','+query
+
+save_res = '\n'+build_res
+
+with open(tmp+csv_file,'a+') as f:
+    f.write(save_res)
+f.close()
+
+'''
 
 db = DB()
 
@@ -26,7 +54,7 @@ f.close()
 
 save_res = ""
 
-sql = "select queries_id, queries_query from queries ORDER BY queries_id"
+sql = "select queries_id, queries_query from queries ORDER BY queries_id where queries_studies_id = 5"
 
 print(sql)
 
@@ -52,6 +80,7 @@ db.DBDisconnect()
 
 
 
+
 #Evaluations Results
 
 db = DB()
@@ -68,56 +97,38 @@ f.close()
 
 save_res = ""
 
-sql = "SELECT count(evaluations_id) from evaluations"
+db = DB()
+
+cur = db.cursor
+
+sql = "SELECT distinct(evaluations_results_hash), evaluations_module, evaluations_result from evaluations, results WHERE evaluations_results_hash = results_hash AND results_studies_id = 5 ORDER BY evaluations_results_hash ASC"
+
+print(sql)
 
 cur.execute(sql)
 
 rows = cur.fetchall()
 
+
+
 db.DBDisconnect()
 
-counter = rows[0][0]
-
-counter = int(round(counter+0.5) / next) + 1
-
-offset = 0
-
-i = 0
-
-for i in range(0, counter):
-
-    db = DB()
-
-    cur = db.cursor
-
-    sql = "SELECT distinct(evaluations_results_hash), evaluations_module, evaluations_result from evaluations ORDER BY evaluations_results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    print(sql)
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    for row in rows:
-        value = ""
-        build_res = ""
-        hash = str(row[0])
-        module = str(row[1])
-        value = str(row[2])
-
-        build_res = hash+','+module+','+value
-
-        save_res = '\n'+build_res
-
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
 
 
+for row in rows:
+    value = ""
+    build_res = ""
+    hash = str(row[0])
+    module = str(row[1])
+    value = str(row[2])
+
+    build_res = hash+','+module+','+value
+
+    save_res = '\n'+build_res
+
+    with open(tmp+csv_file,'a+') as f:
+        f.write(save_res)
+    f.close()
 
 
 #Classifications Results
@@ -138,9 +149,13 @@ offset = 0
 
 i = 0
 
-save_res = ""
+db = DB()
 
-sql = "SELECT count(classifications_id) from classifications"
+cur = db.cursor
+
+sql = "SELECT distinct(classifications_hash), classifications_result from classifications, results WHERE classifications_hash = results_hash  AND results_studies_id = 5 ORDER BY classifications_hash ASC"
+
+print(sql)
 
 cur.execute(sql)
 
@@ -148,45 +163,20 @@ rows = cur.fetchall()
 
 db.DBDisconnect()
 
-counter = rows[0][0]
 
-counter = int(round(counter+0.5) / next) + 1
+for row in rows:
+    value = ""
+    build_res = ""
+    hash = str(row[0])
+    value = str(row[1])
 
-offset = 0
+    build_res = hash+','+value
 
-i = 0
+    save_res = '\n'+build_res
 
-for i in range(0, counter):
-
-    db = DB()
-
-    cur = db.cursor
-
-    sql = "SELECT distinct(classifications_hash), classifications_result from classifications ORDER BY classifications_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    print(sql)
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    for row in rows:
-        value = ""
-        build_res = ""
-        hash = str(row[0])
-        value = str(row[1])
-
-        build_res = hash+','+value
-
-        save_res = '\n'+build_res
-
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
+    with open(tmp+csv_file,'a+') as f:
+        f.write(save_res)
+    f.close()
 
 
 
@@ -208,11 +198,13 @@ with open(tmp+csv_file,'w+') as f:
     f.write(csv_header)
 f.close()
 
-offset = 0
+db = DB()
 
-i = 0
+cur = db.cursor
 
-sql = "SELECT count(results_id) from results"
+sql = "select results_id, results_studies_id, results_position, results_queries_id, results_url, results_main, results_se, results_hash from results WHERE results_studies_id = 5 ORDER BY results_hash ASC"
+
+print(sql)
 
 cur.execute(sql)
 
@@ -220,52 +212,31 @@ rows = cur.fetchall()
 
 db.DBDisconnect()
 
-counter = rows[0][0]
 
-counter = int(round(counter+0.5) / next) + 1
+connection = None
 
-for i in range(0, counter):
+for er in rows:
 
-    db = DB()
-
-    cur = db.cursor
-
-    sql = "select results_id, results_studies_id, results_position, results_queries_id, results_url, results_main, results_se, results_hash from results ORDER BY results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    print(sql)
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    connection = None
-
-    for er in rows:
-
-        build_res = ""
-        results_id = str(er[0])
-        study = str(er[1])
-        results_pos = str(er[2])
-        query_id = str(er[3])
-        url = str(er[4])
-        url = '"'+url+'"'
-        main = str(er[5])
-        main = '"'+main+'"'
-        se = str(er[6])
-        hash = str(er[7])
+    build_res = ""
+    results_id = str(er[0])
+    study = str(er[1])
+    results_pos = str(er[2])
+    query_id = str(er[3])
+    url = str(er[4])
+    url = '"'+url+'"'
+    main = str(er[5])
+    main = '"'+main+'"'
+    se = str(er[6])
+    hash = str(er[7])
 
 
-        build_res = study+','+results_id+','+results_pos+','+query_id+','+url+','+main+','+se+','+hash
+    build_res = study+','+results_id+','+results_pos+','+query_id+','+url+','+main+','+se+','+hash
 
-        save_res = '\n'+build_res
+    save_res = '\n'+build_res
 
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
+    with open(tmp+csv_file,'a+') as f:
+        f.write(save_res)
+    f.close()
 
 
 
@@ -290,11 +261,11 @@ with open(tmp+csv_file,'w+') as f:
 f.close()
 
 
-offset = 0
+db = DB()
 
-i = 0
+cur = db.cursor
 
-sql = "SELECT count(sources_id) from sources"
+sql = "select distinct(sources_hash), sources_speed from sources, results WHERE sources_hash = results_hash  AND results_studies_id = 5 ORDER BY sources_hash ASC"
 
 cur.execute(sql)
 
@@ -302,42 +273,21 @@ rows = cur.fetchall()
 
 db.DBDisconnect()
 
-counter = rows[0][0]
+connection = None
 
-counter = int(round(counter+0.5) / next) + 1
+for er in rows:
 
-for i in range(0, counter):
+    build_res = ""
+    hash = str(er[0])
+    speed = str(er[1])
 
-    db = DB()
+    build_res = hash+','+speed
 
-    cur = db.cursor
+    save_res = '\n'+build_res
 
-    sql = "select distinct(sources_hash), sources_speed from sources ORDER BY sources_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    connection = None
-
-    for er in rows:
-
-        build_res = ""
-        hash = str(er[0])
-        speed = str(er[1])
-
-
-        build_res = hash+','+speed
-
-        save_res = '\n'+build_res
-
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
+    with open(tmp+csv_file,'a+') as f:
+        f.write(save_res)
+    f.close()
 
 
 
@@ -364,6 +314,7 @@ print("Load: classifications.csv")
 print("\n")
 
 classfications_df = pd.read_csv(tmp+'classifications.csv', error_bad_lines=False, low_memory=False)
+
 
 
 print("Load: evaluations.csv")
@@ -401,9 +352,9 @@ print("\n")
 
 results_speed_evaluations_queries_classifications_merged = results_speed_evaluations_queries_merged.merge(classfications_df, left_on='hash', right_on='hash')
 
-#print(results_speed_evaluations_queries_merged.iloc[3])
 
-#print(results_speed_evaluations_queries_merged)
+
+print(results_speed_evaluations_queries_merged)
 
 print("Save: seo_results.csv")
 print("\n")
@@ -432,7 +383,7 @@ db_modules = sorted(db_modules, key=str.lower)
 
 save_res = ""
 
-csv_file = 'merged_results_19052021csv'
+csv_file = 'merged_results_import.csv'
 
 
 with open(csv_file,'w+') as f:

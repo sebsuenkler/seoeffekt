@@ -31,7 +31,7 @@ class Scrapers:
 
 
     def getScrapingJobsByQueryProgressSE(cursor, query_id, progress, se):
-        sql= "SELECT * FROM scrapers WHERE scrapers_queries_id = %s AND scrapers_progress = %s AND scrapers_se = %s ORDER BY scrapers_start, scrapers_se ASC"
+        sql= "SELECT * FROM scrapers WHERE scrapers_queries_id = %s AND scrapers_progress = %s AND scrapers_se = %s ORDER BY scrapers_start, scrapers_se ASC LIMIT 1"
         data = (query_id, progress, se)
         cursor.execute(sql,(data))
         rows = cursor.fetchall()
@@ -53,7 +53,12 @@ class Scrapers:
         rows = cursor.fetchall()
         return rows
 
-
+    def getScrapingJobsByStudyQueries(cursor, study):
+        sql= "SELECT count(distinct(scrapers_queries_id)) from scrapers, queries WHERE scrapers_queries_id = queries_id AND scrapers_studies_id=%s"
+        data = (study)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
 
 #write to db
 
