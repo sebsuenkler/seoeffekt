@@ -1,4 +1,6 @@
-#background scheduler for scraping
+#background scheduler to scrape Google Germany using selenium
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

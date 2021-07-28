@@ -1,31 +1,63 @@
+# Decision Tree Classification
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *
 
+#load classifiers from config file
+
 try:
-
-    def getResults():
-        hashes = Evaluations.getResultstoClassify(number_indicators)
-        return hashes
-
-
-    hashes = getResults()
 
     with open('../../config/classifier.ini', 'r') as f:
         array = json.load(f)
 
     classifier = array['classifier']
 
+    hashes_check = []
+
+    hashes = Evaluations.getResultstoClassify(number_indicators)
+
+    if(Evaluations.getUnassigned()):
+        hashes_check = Evaluations.getResultstoClassifyCheck()
+
+
+
+
+    #classify results using all available classifiers
     for c in classifier:
-        config = classifier[c]
-        classifier_id = config['id']
-        classifier_file = config['file']
-        print(classifier_id)
-        print(classifier_file)
-        class_module = __import__(classifier_file)
-        class_module.classify(classifier_id, hashes)
+        classifier_id = c
+        classification_result = "unassigned"
+        Evaluations.deleteDupClassifiedData()
+        Evaluations.deleteDuplicates()
+
+        if(hashes):
+            for h in hashes:
+                hash = h[0]
+                if (not Evaluations.getClassificationResultValue(hash, classifier_id, classification_result)):
+                    Evaluations.insertClassificationResult(hash, classification_result, classifier_id, today)
+                    #print(hash)
+                    #print(classification_result)
+
+        if(hashes_check):
+            for hc in hashes_check:
+                hash = hc[0]
+                classes = hc[1]
+                if classifier_id not in classes:
+                    if (not Evaluations.getClassificationResultValue(hash, classifier_id, classification_result)):
+                        Evaluations.insertClassificationResult(hash, classification_result, classifier_id, today)
+                        #print(hash)
+                        #print(classification_result)
 
 
+        hashes_to_classify = Evaluations.getResultstoUpdateClassification(classifier_id, classification_result)
+
+
+
+        if(hashes_to_classify):
+            class_module = __import__(classifier_id)
+            class_module.classify(classifier_id, hashes_to_classify)
 
 
 except Exception as e:

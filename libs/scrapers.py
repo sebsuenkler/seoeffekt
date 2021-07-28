@@ -14,7 +14,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.firefox.options import Options
 from lxml import html
 
-from fake_useragent import UserAgent
+#from fake_useragent import UserAgent
 
 #tool libs
 sys.path.insert(0, '..')
@@ -213,10 +213,13 @@ class Scrapers:
 
                         options = Options()
 
+                        '''
                         ua = UserAgent()
                         userAgent = ua.random
                         print(userAgent)
                         options.add_argument(f'user-agent={userAgent}')
+                        '''
+
                         options.add_argument("user-data-dir=selenium")
                         options.log.level = 'error'
 
@@ -307,10 +310,13 @@ class Scrapers:
 
         options = Options()
 
+        '''
         ua = UserAgent()
         userAgent = ua.random
         print(userAgent)
         options.add_argument(f'user-agent={userAgent}')
+        '''
+
         options.add_argument("user-data-dir=selenium")
         options.log.level = 'error'
 

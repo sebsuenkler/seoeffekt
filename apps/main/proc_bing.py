@@ -1,4 +1,6 @@
-#sub processes to scrape
+#sub processes to scrape bing
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

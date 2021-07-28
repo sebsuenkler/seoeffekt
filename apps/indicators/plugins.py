@@ -1,3 +1,7 @@
+#script to check seo plugins and analytics tools in html code
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

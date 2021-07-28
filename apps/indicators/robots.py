@@ -1,12 +1,6 @@
-'''
-Crawl-delay: 10
+#script to check seo in robots.txt
 
-Alle User Agents != *
-
-Sitemap:
-
-Noindex:
-'''
+#include libs
 
 import sys
 sys.path.insert(0, '..')
@@ -63,6 +57,6 @@ def robots(hash, result_main, main_hash):
         for r_h in res_hashes:
 
             if (not Evaluations.getEvaluationModuleResult(r_h, module, value)):
-                print(r_h)
-                print(robots_url)
+                #print(r_h)
+                #print(robots_url)
                 Evaluations.insertEvaluationResult(r_h, module, value, today)

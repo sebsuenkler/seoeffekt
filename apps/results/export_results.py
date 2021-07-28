@@ -1,16 +1,139 @@
-#!!!
-#sys libs
+#script to export the results from database
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *
 
+#folder to store the interim results
 tmp = 'tmp/'
 
+'''
+#Calculate the offset
 
-next = 100000
+db = DB()
+
+cur = db.cursor
+
+sql = "SELECT count(distinct(results_hash)) from results"
+
+cur.execute(sql)
+
+rows = cur.fetchall()
+
+db.DBDisconnect()
+
+next = int(round(rows[0][0] / 3))
+
+#Results from classifications table
+
+db = DB()
+
+cur = db.cursor
+
+sql = "SELECT distinct(classifications_classification) from classifications"
+
+cur.execute(sql)
+
+rows = cur.fetchall()
+classes = rows
+
+db.DBDisconnect()
+
+db = DB()
+
+cur = db.cursor
+
+csv_header = 'hash'
+
+for c in classes:
+    classification = c[0]
+
+    csv_header = csv_header+','+classification
 
 
-#Queries Results
+csv_file = 'classifications.csv'
+
+with open(tmp+csv_file,'w+') as f:
+    f.write(csv_header)
+f.close()
+
+offset = 0
+
+i = 0
+
+save_res = ""
+
+sql = "SELECT count(classifications_id) from classifications"
+
+cur.execute(sql)
+
+rows = cur.fetchall()
+
+db.DBDisconnect()
+
+counter = rows[0][0]
+
+counter = int(round(counter+0.5) / next) + 1
+
+
+for i in range(0, counter):
+
+    db = DB()
+
+    cur = db.cursor
+
+    sql = "SELECT DISTINCT(classifications_hash) from classifications ORDER BY classifications_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+
+    print(sql)
+
+    cur.execute(sql)
+
+    rows = cur.fetchall()
+
+    db.DBDisconnect()
+
+    offset = offset + next
+
+    x = 0
+
+    for row in rows:
+
+        x = x + 1
+
+        print(x)
+
+        build_res = ""
+        hash = str(row[0])
+
+        classifications_results = ""
+
+        for c in classes:
+            classification = c[0]
+
+
+            result = Evaluations.getClassificationResult(hash, classification)
+            if result:
+                value = result[0][0]
+            else:
+                value = ""
+
+
+            classifications_results += value+','
+
+        classifications_results = classifications_results[:-1]
+
+
+        build_res = hash+','+classifications_results
+
+        save_res = '\n'+build_res
+
+        with open(tmp+csv_file,'a+') as f:
+            f.write(save_res)
+        f.close()
+
+
+#Results from queries table
 
 db = DB()
 
@@ -50,9 +173,19 @@ for er in rows:
 
 db.DBDisconnect()
 
+query_id = "0"
 
+query = "import"
 
-#Evaluations Results
+build_res = query_id+','+query
+
+save_res = '\n'+build_res
+
+with open(tmp+csv_file,'a+') as f:
+    f.write(save_res)
+f.close()
+
+#Results from evaluations table
 
 db = DB()
 
@@ -90,7 +223,7 @@ for i in range(0, counter):
 
     cur = db.cursor
 
-    sql = "SELECT distinct(evaluations_results_hash), evaluations_module, evaluations_result from evaluations ORDER BY evaluations_results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+    sql = "SELECT evaluations_results_hash, evaluations_module, evaluations_result from evaluations ORDER BY evaluations_results_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
 
     print(sql)
 
@@ -117,82 +250,7 @@ for i in range(0, counter):
             f.write(save_res)
         f.close()
 
-
-
-
-#Classifications Results
-
-db = DB()
-
-cur = db.cursor
-
-csv_header = 'hash,class'
-
-csv_file = 'classifications.csv'
-
-with open(tmp+csv_file,'w+') as f:
-    f.write(csv_header)
-f.close()
-
-offset = 0
-
-i = 0
-
-save_res = ""
-
-sql = "SELECT count(classifications_id) from classifications"
-
-cur.execute(sql)
-
-rows = cur.fetchall()
-
-db.DBDisconnect()
-
-counter = rows[0][0]
-
-counter = int(round(counter+0.5) / next) + 1
-
-offset = 0
-
-i = 0
-
-for i in range(0, counter):
-
-    db = DB()
-
-    cur = db.cursor
-
-    sql = "SELECT distinct(classifications_hash), classifications_result from classifications ORDER BY classifications_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
-
-    print(sql)
-
-    cur.execute(sql)
-
-    rows = cur.fetchall()
-
-    db.DBDisconnect()
-
-    offset = offset + next
-
-    for row in rows:
-        value = ""
-        build_res = ""
-        hash = str(row[0])
-        value = str(row[1])
-
-        build_res = hash+','+value
-
-        save_res = '\n'+build_res
-
-        with open(tmp+csv_file,'a+') as f:
-            f.write(save_res)
-        f.close()
-
-
-
-
-
-#Results Results
+#Results from results table
 
 db = DB()
 
@@ -267,12 +325,7 @@ for i in range(0, counter):
             f.write(save_res)
         f.close()
 
-
-
-
-
-
-#Results Speed
+#Results from sources table / loading speed of webpage
 
 db = DB()
 
@@ -312,7 +365,9 @@ for i in range(0, counter):
 
     cur = db.cursor
 
-    sql = "select distinct(sources_hash), sources_speed from sources ORDER BY sources_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+    sql = "select sources_hash, sources_speed from sources ORDER BY sources_hash ASC offset "+str(offset)+" fetch next "+str(next)+" rows only"
+
+    print(sql)
 
     cur.execute(sql)
 
@@ -341,6 +396,8 @@ for i in range(0, counter):
 
 
 
+
+#use panda to join results
 
 print("Load: results.csv")
 print("\n")
@@ -388,7 +445,6 @@ print("\n")
 results_speed_evaluations_merged = results_speed_merged.merge(evaluations_df, left_on='hash', right_on='hash')
 
 
-
 print("Merge: results speed evaluations queries")
 print("\n")
 
@@ -401,9 +457,6 @@ print("\n")
 
 results_speed_evaluations_queries_classifications_merged = results_speed_evaluations_queries_merged.merge(classfications_df, left_on='hash', right_on='hash')
 
-#print(results_speed_evaluations_queries_merged.iloc[3])
-
-#print(results_speed_evaluations_queries_merged)
 
 print("Save: seo_results.csv")
 print("\n")
@@ -411,20 +464,40 @@ print("\n")
 
 results_speed_evaluations_queries_classifications_merged.to_csv(r'seo_results.csv', index = False)
 
-#results_speed_evaluations_queries_merged.to_csv(r'seo_results.csv', index = False)
-
 print("Finished")
 print("\n")
 
+'''
 
-
-
-
+#script to save results as readable table in a csv file
 tools = ['tools analytics', 'tools caching', 'tools seo', 'tools content', 'tools social', 'tools ads']
 
-csv_header = 'Study,ID,Hash,Position,Query_ID,Query,URL,Main,Search Engine,Speed,Classification,check canonical,check description,check external links,check h1,check https,check internal links,check kw_count,check kw_density,check kw_in_description-og-name,check kw_in_description-og-property,check kw_in_href,check kw_in_link-text,check kw_in_meta-content,check kw_in_meta-description,check kw_in_meta-og,check kw_in_meta-properties,check kw_in_source,check kw_in_title,check kw_in_title-meta,check kw_in_title-og,check kw_in_url,check nofollow,check og,check sitemap,check title,check title_h1_identical,check title_h1_match,check url_length,check viewport,check word_count,check wordpress,micros,micros counter,robots_txt,source ads,source company,source known,source news,source not optimized,source search engine,source shop,source top,tools ads,tools ads count,tools analytics,tools analytics count,tools caching,tools caching count,tools content,tools content count,tools seo,tools seo count,tools social,tools social count'
+#todo: dynamic creation of modules and header related to the indicators
+csv_header = 'Study,ID,Hash,Position,Query_ID,Query,URL,Main,Search Engine,Speed,check canonical,check description,check external links,check h1,check https,check_identical_title,check internal links,check kw_count,check kw_density,check kw_in_description-og-name,check kw_in_description-og-property,check kw_in_href,check kw_in_link-text,check kw_in_meta-content,check kw_in_meta-description,check kw_in_meta-og,check kw_in_meta-properties,check kw_in_source,check kw_in_title,check kw_in_title-meta,check kw_in_title-og,check kw_in_url,check nofollow,check og,check sitemap,check title,check title_h1_identical,check title_h1_match,check url_length,check viewport,check word_count,check wordpress,micros,micros counter,robots_txt,source ads,source company,source known,source news,source not optimized,source search engine,source shop,source top,tools ads,tools ads count,tools analytics,tools analytics count,tools caching,tools caching count,tools content,tools content count,tools seo,tools seo count,tools social,tools social count'
 
-db_modules = ['check canonical','check description','check external links','check h1','check https','check internal links','check kw_count','check kw_density','check kw_in_href','check kw_in_link-text','check kw_in_meta-content','check kw_in_meta-description','check kw_in_meta-og','check kw_in_meta-properties','check kw_in_source','check kw_in_title','check kw_in_title-meta','check kw_in_title-og','check kw_in_description-og-property','check kw_in_description-og-name','check kw_in_url','check nofollow','check og','check sitemap','check title','check title_h1_identical','check title_h1_match','check url_length','check viewport','check word_count','check wordpress','micros','micros counter','robots_txt', 'source ads','source company','source known','source news','source not optimized','source shop', 'source search engine','source top', 'tools ads','tools ads count','tools analytics','tools analytics count','tools caching','tools caching count','tools content','tools content count','tools seo','tools seo count','tools social','tools social count']
+db_modules = ['check canonical','check description','check external links','check h1','check https','check identical title', 'check internal links','check kw_count','check kw_density','check kw_in_href','check kw_in_link-text','check kw_in_meta-content','check kw_in_meta-description','check kw_in_meta-og','check kw_in_meta-properties','check kw_in_source','check kw_in_title','check kw_in_title-meta','check kw_in_title-og','check kw_in_description-og-property','check kw_in_description-og-name','check kw_in_url','check nofollow','check og','check sitemap','check title','check title_h1_identical','check title_h1_match','check url_length','check viewport','check word_count','check wordpress','micros','micros counter','robots_txt', 'source ads','source company','source known','source news','source not optimized','source shop', 'source search engine','source top', 'tools ads','tools ads count','tools analytics','tools analytics count','tools caching','tools caching count','tools content','tools content count','tools seo','tools seo count','tools social','tools social count']
+
+#add classifier results to table
+db = DB()
+
+cur = db.cursor
+
+sql = "SELECT distinct(classifications_classification) from classifications"
+
+cur.execute(sql)
+
+rows = cur.fetchall()
+classes = rows
+
+db.DBDisconnect()
+
+res_classes = []
+
+for c in classes:
+    csv_header = csv_header+','+ c[0]
+
+
+
 
 
 db_modules = sorted(db_modules, key=str.lower)
@@ -432,7 +505,7 @@ db_modules = sorted(db_modules, key=str.lower)
 
 save_res = ""
 
-csv_file = 'merged_results_19052021csv'
+csv_file = 'all_res.csv'
 
 
 with open(csv_file,'w+') as f:
@@ -450,39 +523,22 @@ eval_results = pd.read_csv(file, error_bad_lines=False, low_memory=False)
 pd.set_option('display.max_columns', None)
 
 
-
 '''
-results_studies_id                                                    1
-results_id                                                       463846
-results_position                                                     56
-results_queries_id                                                 1608
-results_url           https://www.daserste.de/information/wirtschaft...
-results_main                                   https://www.daserste.de/
+results_studies_id                                                   82
+results_id                                                        23003
+results_position                                                    132
+results_queries_id                                                  336
+results_url           https://www.abendblatt.de/region/stormarn/arti...
+results_main                                 https://www.abendblatt.de/
 results_se                                                       Google
-hash                                   f977e18d968470c14b0661632b8791c4
- speed                                                           21.566
- module               ['check kw_in_description-og-property', 'micro...
- value                ['0', '0', '0', '0', '1', '0', '1', '0', '5', ...
-queries_id                                                         1608
- query                                                       Grundrente
-'''
-
-'''
-['results_studies_id',
-'results_id',
-'results_position',
-'results_queries_id',
-'results_url',
-'results_main',
-'results_se',
-'hash',
-'speed',
-'module',
-'value',
-'queries_id',
-'query']
-
-['results_studies_id', 'results_id', 'results_position', 'results_queries_id', 'results_url', 'results_main', 'results_se', 'hash', 'speed', 'module', 'result', 'queries_id', 'query', 'class']
+hash                                   007e34735874a3f83d95106bd5778d1a
+speed                                                              4.44
+module                ['check url_length', 'robots_txt', 'source top...
+result                ['108', '1', '1', '0', '0', '0', '1', '0', '0'...
+queries_id                                                          336
+query                                                        hochwasser
+decision_tree                                                 optimized
+rules                                                         optimized
 
 '''
 
@@ -492,6 +548,19 @@ print("Write to CSV")
 
 
 for index, row in eval_results.iterrows():
+
+    row_len = len(row)
+
+    y = len(classes)
+    y = y + 1
+
+    class_results = []
+
+    for x in classes:
+        y = y - 1
+        row_index = row_len - y
+        class_results.append(row[row_index])
+
     build_res = ""
     hash = str(row[7])
 
@@ -500,10 +569,6 @@ for index, row in eval_results.iterrows():
     results_id = str(row[1])
     results_pos = str(row[2])
     queries_query = '"'+row[12]+'"'
-
-    result_class = ''
-
-    result_class = '"'+row[13]+'"'
 
 
 
@@ -523,7 +588,6 @@ for index, row in eval_results.iterrows():
 
 
     modules = row[9]
-
     #print(modules)
 
     modules = modules.replace('"','')
@@ -590,7 +654,7 @@ for index, row in eval_results.iterrows():
 
 
 
-    build_res = study+','+results_id+','+hash+','+results_pos+','+query_id+','+queries_query+','+url+','+main+','+se+','+speed+','+result_class+','
+    build_res = study+','+results_id+','+hash+','+results_pos+','+query_id+','+queries_query+','+url+','+main+','+se+','+speed+','
 
     lh_values = []
     lh_results = ''
@@ -645,14 +709,13 @@ for index, row in eval_results.iterrows():
     for l in lh_list:
         lh_results = lh_results + l[1]+','
 
-    lh_results = lh_results[:-1]
-
 
     build_res = build_res+lh_results
 
-    #print(build_res)
-    #print("\n")
+    for cr in class_results:
+        build_res = build_res+cr+','
 
+    build_res = build_res[:-1]
 
 
     save_res = '\n'+build_res

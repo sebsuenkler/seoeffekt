@@ -1,3 +1,6 @@
+#script to calculate keyword_density
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

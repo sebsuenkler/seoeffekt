@@ -1,99 +1,17 @@
+# Rule-based Classifier
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *
 
 
+#function to classify
+
 def classify(classifier_id, hashes):
 
-
-
-    def check_title(tree):
-
-        title = ""
-
-        xpath_title = "//title/text()"
-        xpath_meta_title = "//meta[@name='title']/@content"
-        xpath_og_title = "//meta[@property='og:title']/@content"
-
-        check_title = str(tree.xpath(xpath_title))
-        check_meta_title = str(tree.xpath(xpath_meta_title))
-        check_og_title = str(tree.xpath(xpath_og_title))
-
-        if len(check_title) > 4 or len(check_meta_title) > 4  or len(check_og_title) > 4:
-            if len(check_og_title) > 4:
-                title = check_og_title
-            elif len(check_meta_title) > 4:
-                title = check_meta_title
-            else:
-                title = check_title
-
-            title = title[2:-2]
-
-            title = title.replace("'", "")
-            title = title.replace('"', "")
-            title = title.replace(':', "")
-            title = title.replace(',', "")
-
-            title = title.strip()
-
-
-        return title
-
-    def check_identical_title(hash):
-        results_urls = str(Sources.getSourcesURLs(hash))
-
-        list_results_urls = list(results_urls.split("[url]"))
-
-        results_links = []
-
-        for l in list_results_urls:
-            url_split = l.split("   ")
-            try:
-                if results_main in url_split[1]:
-                    if not Helpers.matchText(url_split[1], '*javascript*') and not Helpers.matchText(url_split[1], '*None*') and url_split[1] != results_main and Helpers.validate_url(url_split[1]):
-                        results_links.append(url_split[1])
-            except:
-                pass
-
-
-        results_links = list(dict.fromkeys(results_links))
-
-        number_of_links = 2
-        n = 0
-
-        if len(results_links) < number_of_links:
-            number_of_links = len(results_links)
-
-        results_source = Results.getResultsSource(hash)
-        code = Helpers.html_unescape(results_source[0][0])
-        code = code.lower()
-        tree = html.fromstring(code)
-
-        title = check_title(tree)
-
-        identical_title = 0
-
-
-        while n < number_of_links and number_of_links < 5:
-            try:
-                print(results_links[n])
-                source = Results.saveResult(results_links[n])
-                if source != 'error':
-                    n += 1
-                    code = source.lower()
-                    tree = html.fromstring(code)
-                    link_title = check_title(tree)
-                    if title == link_title:
-                        identical_title = 1
-                else:
-                    number_of_links += 1
-
-            except:
-                number_of_links += 1
-
-
-        return identical_title
-
+    #functions to check the usage of titles in the document
 
     for h in hashes:
 
@@ -101,8 +19,6 @@ def classify(classifier_id, hashes):
         results_url = h[1]
         results_main = h[2]
         results_speed = h[3]
-
-
 
         evaluations_results = Evaluations.getEvaluationsResults(hash)
 
@@ -138,6 +54,7 @@ def classify(classifier_id, hashes):
         indicator_og = int(dict_results['check og'])
         indicator_micros = int(dict_results['micros counter'])
         indicator_title = int(dict_results['check title'])
+        indicator_identical_title = int(dict_results['check identical title'])
         indicator_description = int(dict_results['check description'])
         indicator_speed = results_speed
 
@@ -156,7 +73,6 @@ def classify(classifier_id, hashes):
         probably_optimized = 0
         probably_not_optimized = 0
         classification_result = "uncertain"
-        indicator_identical_title = 0
 
         #most_probably_not_optimized
         if source_not_optimized == 1:
@@ -176,25 +92,14 @@ def classify(classifier_id, hashes):
             classification_result = 'probably_optimized'
             classification_count += 1
 
-        if optimized == 0 and not_optimized == 0 and probably_optimized == 0:
-            indicator_identical_title = check_identical_title(hash)
-
         #probably_not_optimized
-        if optimized == 0 and not_optimized == 0:
-            if indicator_title == 0 or indicator_description == 0 or indicator_identical_title == 1:
+        if optimized == 0 and not_optimized == 0 and (indicator_title == 0 or indicator_description == 0 or indicator_identical_title == 1 or indicator_og != 1 or indicator_speed > 60):
                 probably_not_optimized = 1
                 classification_result = 'probably_not_optimized'
                 classification_count += 1
 
-        #if classification_count == 0 or classification_count > 1:
-        #    classification_result = "uncertain"
+        Evaluations.updateClassificationResult(hash, classification_result, classifier_id, today)
 
-        #elif probably_optimized == 1 and probably_not_optimized == 1:
-        #    classification_result = "uncertain"
-
-
-        if (not Evaluations.getClassificationResult(hash, classifier_id)):
-            Evaluations.insertClassificationResult(hash, classification_result, classifier_id, today)
-            print(results_url)
-            print(hash)
-            print(classification_result)
+        print(results_url)
+        print(hash)
+        print(classification_result)

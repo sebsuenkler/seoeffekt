@@ -1,4 +1,6 @@
-#sub processes to start all apps
+#sub processes to save html source codes and to measure the loading speed of a webpage
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

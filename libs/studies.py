@@ -59,3 +59,8 @@ class Studies:
         db = DB()
         DB_Studies.deleteStudy(db.cursor, study_id)
         db.DBDisconnect()
+
+    def deleteunassignedResults():
+        db = DB()
+        DB_Studies.deleteunassignedResults(db.cursor)
+        db.DBDisconnect()

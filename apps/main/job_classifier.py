@@ -1,4 +1,6 @@
-#background scheduler to analyze urls
+#background scheduler to classify documents
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

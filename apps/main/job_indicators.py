@@ -1,4 +1,6 @@
-#background scheduler to analyze urls
+#background scheduler to start the main app to collect technical seo indicators
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

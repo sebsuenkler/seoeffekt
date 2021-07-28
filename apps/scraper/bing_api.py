@@ -1,4 +1,5 @@
-#sys libs
+#script to scraper bing api
+
 #include libs
 import sys
 sys.path.insert(0, '..')

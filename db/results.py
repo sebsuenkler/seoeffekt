@@ -183,6 +183,8 @@ class Results:
         rows = cursor.fetchall()
         return rows
 
+
+
     def insertEvaluationResult(cursor, evaluations_results_id, evaluations_module, evaluations_result):
         cursor.execute("INSERT INTO evaluations VALUES(%s,%s,%s) ON CONFLICT DO NOTHING;", (evaluations_results_id, evaluations_module, evaluations_result,))
 

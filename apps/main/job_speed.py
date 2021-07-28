@@ -1,4 +1,6 @@
-#background scheduler for measure pagespeed
+#background scheduler to measure the loading speed of a webpage
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

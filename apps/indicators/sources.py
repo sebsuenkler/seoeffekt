@@ -1,3 +1,7 @@
+#script to check if domain is in one of the sources lists with categorized domains
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

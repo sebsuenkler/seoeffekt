@@ -17,3 +17,5 @@
 - requests
 - flask
 - pandas
+- scikit-learn
+- imblearn

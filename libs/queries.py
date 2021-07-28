@@ -24,6 +24,12 @@ class Queries:
         db.DBDisconnect()
         return rows
 
+    def getQueriesIdStudy(study_id):
+        db = DB()
+        rows = DB_Queries.getQueriesIdStudy(db.cursor, study_id)
+        db.DBDisconnect()
+        return rows
+
     def countQueriesStudy(studies_id):
         db = DB()
         rows = DB_Queries.countQueriesStudy(db.cursor, studies_id)

@@ -23,6 +23,13 @@ class Queries:
         rows = cursor.fetchall()
         return rows
 
+    def getQueriesIdStudy(cursor, study_id):
+        sql= "SELECT DISTINCT(queries_id) from queries  WHERE queries_studies_id=%s"
+        data = (study_id)
+        cursor.execute(sql,(data,))
+        rows = cursor.fetchall()
+        return rows
+
     def getQueriesNoScrapers(cursor, study_id):
         sql= "SELECT DISTINCT(queries_id) from queries LEFT JOIN scrapers on scrapers_queries_id = queries_id WHERE queries_studies_id=%s AND scrapers_se IS NULL AND scrapers_queries_id IS NULL"
         data = (study_id)

@@ -1,4 +1,4 @@
-#main app to gather seo indicators from a webpage
+#main app to collect technical seo indicators from a webpage
 
 #include libs
 import sys
@@ -45,6 +45,8 @@ from sources import sources
 from robots import robots
 
 from url_length import url_length
+
+from identical_title import identical_title
 
 try:
 
@@ -126,62 +128,64 @@ try:
                 query = "-1"
                 check_query = False
 
-            print('canonical')
+            #print('canonical')
             canonical(hash, tree)
 
-            print('kw')
+            #print('kw')
             kw(hash,tree, query, check_query)
             kw_in_url(hash,result_url, query, check_query)
             keyword_density(hash,query, soup, check_query)
 
-            print('title_h1')
+            #print('title_h1')
             title_h1(hash,tree)
 
-            print('viewport')
+            #print('viewport')
             viewport(hash,code)
 
-            print('description')
+            #print('description')
             description(hash,tree)
 
-            print('title')
+            #print('title')
             title(hash,tree)
 
-            print('links')
+            #print('links')
             links(hash,result_main, html_source)
 
-            print('plugins')
+            #print('plugins')
             plugins(hash,html_source, html_comments)
 
-            print('https')
+            #print('https')
             https(result_url, hash)
 
-            print('micros')
+            #print('micros')
             micros(hash,html_comments, html_source)
 
-            print('og')
+            #print('og')
             og(hash,code)
 
-            print('sitemap')
+            #print('sitemap')
             sitemap(hash,code)
 
-            print('wordpress')
+            #print('wordpress')
             wordpress(hash,tree)
 
-
-            print('nofollow')
+            #print('nofollow')
             nofollow(hash,tree)
 
-            print('h1')
+            #print('h1')
             h1(hash,tree)
 
-            print('sources')
+            #print('sources')
             sources(hash, result_url, result_main)
 
-            print('robots')
+            #print('robots')
             robots(hash, result_main, main_hash)
 
-            print('url_length')
+            #print('url_length')
             url_length(hash, result_url)
+
+            #print('identical_title')
+            identical_title(hash, result_main)
 
 
 except Exception as e:

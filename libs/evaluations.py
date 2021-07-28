@@ -59,6 +59,30 @@ class Evaluations:
         db.DBDisconnect()
         return rows
 
+    def getResultstoClassifyCheck():
+        db = DB()
+        rows = DB_Evaluations.getResultstoClassifyCheck(db.cursor)
+        db.DBDisconnect()
+        return rows
+
+    def getUnassigned():
+        db = DB()
+        rows = DB_Evaluations.getUnassigned(db.cursor)
+        db.DBDisconnect()
+        return rows
+
+
+    def getResultstoUpdateClassification(classifier_id, classifier_result):
+        db = DB()
+        rows = DB_Evaluations.getResultstoUpdateClassification(db.cursor, classifier_id, classifier_result)
+        db.DBDisconnect()
+        return rows
+
+    def getResultwithIndicators(hash):
+        db = DB()
+        rows = DB_Evaluations.getResultwithIndicators(db.cursor, hash)
+        db.DBDisconnect()
+        return rows
 
     def getEvaluationsResults(hash):
         db = DB()
@@ -73,6 +97,11 @@ class Evaluations:
         db.DBDisconnect()
         return rows
 
+    def getClassificationResultValue(hash, classifications_classification, classifications_result):
+        db = DB()
+        rows = DB_Evaluations.getClassificationResultValue(db.cursor, hash, classifications_classification, classifications_result)
+        db.DBDisconnect()
+        return rows
 
 #write to db
 
@@ -93,12 +122,21 @@ class Evaluations:
         DB_Evaluations.insertClassificationResult(db.cursor, hash, result, classifications_classification, today)
         db.DBDisconnect()
 
+    def updateClassificationResult(hash, result, classifications_classification, today):
+        db = DB()
+        DB_Evaluations.updateClassificationResult(db.cursor, hash, result, classifications_classification, today)
+        db.DBDisconnect()
 #delete from db
 
 #function to remove duplicates
     def deleteDuplicates():
         db = DB()
         rows = DB_Evaluations.deleteDuplicates(db.cursor)
+        db.DBDisconnect()
+
+    def deleteDupClassifiedData():
+        db = DB()
+        rows = DB_Evaluations.deleteDupClassifiedData(db.cursor)
         db.DBDisconnect()
 
 

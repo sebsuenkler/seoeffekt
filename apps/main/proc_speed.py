@@ -1,4 +1,6 @@
-#sub processes to measure pagespedd and to check seo in robots.txt
+#sub processes to measure loading speed of a webpage
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

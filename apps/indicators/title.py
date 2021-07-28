@@ -1,3 +1,7 @@
+#script to check title tag in html
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

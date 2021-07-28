@@ -1,3 +1,6 @@
+#script to check the use of https
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

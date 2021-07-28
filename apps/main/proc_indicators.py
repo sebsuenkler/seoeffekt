@@ -1,4 +1,6 @@
-#sub processes to gather seo indicators
+#sub processes to collect seo indicators and to classify the documents
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

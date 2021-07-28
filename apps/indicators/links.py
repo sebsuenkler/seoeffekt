@@ -1,3 +1,7 @@
+#script count internal and external links
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

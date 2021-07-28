@@ -1,3 +1,7 @@
+#script check keywords in url
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

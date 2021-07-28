@@ -1,4 +1,6 @@
-#background scheduler for scraping
+#background scheduler to scrape bing
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

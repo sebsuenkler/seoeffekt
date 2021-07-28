@@ -1,7 +1,12 @@
+#script to count keywords
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *
 
+#open config file with possible keyword positions in a document
 with open('../../config/kw.ini', 'r') as f:
     array = json.load(f)
 

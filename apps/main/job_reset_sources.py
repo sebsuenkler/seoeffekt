@@ -1,4 +1,6 @@
-#background scheduler for scraping
+#background scheduler to reset failed saves of html sources
+
+#include libs
 import sys
 sys.path.insert(0, '..')
 from include import *

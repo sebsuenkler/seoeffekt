@@ -1,3 +1,7 @@
+#script to check title tags in headers
+
+#include libs
+
 import sys
 sys.path.insert(0, '..')
 from include import *

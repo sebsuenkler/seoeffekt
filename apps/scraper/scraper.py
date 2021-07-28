@@ -53,8 +53,11 @@ def generate_scraping_job(query, scraper):
 
 def scrape_query(query, scraper):
 
+
+
     today = date.today()
     jobs = Scrapers.getScrapingJobsByQueryProgressSE(query, 0, scraper.search_engine)
+
 
     for job in jobs:
 
@@ -65,6 +68,8 @@ def scrape_query(query, scraper):
         query_id = job[0]
         study_id = job[1]
         job_id = job[7]
+
+        print(start)
 
         progress = 2
 
@@ -141,21 +146,14 @@ def scrape_query(query, scraper):
                         Helpers.saveLog("../../logs/"+str(study_id)+"_"+search_query+".log", 'Insert Result', 1)
         else:
             Helpers.saveLog("../../logs/"+str(study_id)+"_"+search_query+".log", 'Error Scraping Job', 1)
-            #Scrapers.updateScrapingJob(job_id, -1)
             Scrapers.updateScrapingJobQuerySearchEngine(query_id, search_engine, -1)
             Results.deleteResultsNoScrapers(query_id, search_engine)
-            #Result.deleteResults(query_id, search_engine)
             exit()
 
 
 
 
 #app controller
-
-'''
-Change Dependency: mache das Scraping abhängig von den Suchmaschinen und den Fehlern dort, auch in Bezug auf das Löschen der Results, da sonst immer alle Ergebnisse gelöscht werden
-'''
-
 
 try:
     #if not(Scrapers.getScrapingJobsByProgress(-1)):
@@ -166,50 +164,52 @@ try:
 
     studies = get_studies()
 
+
+
     for s in studies:
 
 
 
-        toscrape = []
+        to_scrape = []
         study_id = s[-3]
 
-        if study_id == 54:
 
-            studies_scrapers = s[-1]
-            to_scrape = []
+        studies_scrapers = s[-1]
 
 
-            if studies_scrapers:
+        if studies_scrapers:
 
 
-                if ";" in studies_scrapers:
-                    studies_scrapers = studies_scrapers.split(";")
+            if ";" in studies_scrapers:
+                studies_scrapers = studies_scrapers.split(";")
 
-                    for sc in studies_scrapers:
-                        to_scrape.append(sc)
-                else:
-                    to_scrape.append(studies_scrapers)
+                for sc in studies_scrapers:
+                    to_scrape.append(sc)
+            else:
+                to_scrape.append(studies_scrapers)
 
-                for ts in to_scrape:
+            for ts in to_scrape:
 
-                    if ts !="Bing_API" and ts !="Google_Selenium" and ts !="Google_Selenium_SV":
 
-                        queries = get_queries(study_id)
+                if ts !="Bing_API" and ts !="Google_Selenium" and ts !="Google_Selenium_SV":
 
-                        for q in queries:
-                            query_db = Queries.getQuerybyID(q)
-                            query_id = query_db[0][-2]
+                    queries = get_queries(study_id)
 
-                            job = 0
-                            check_jobs = Scrapers.getScrapingJobsBySE(query_id, ts)
-                            count_jobs = check_jobs[0][0]
-                            if count_jobs == 0:
-                                job = 1
 
-                            if job == 1:
-                                for s in scrapers:
-                                    if s.search_engine == ts:
-                                        generate_scraping_job(query_db[0], s)
+                    for q in queries:
+                        query_db = Queries.getQuerybyID(q)
+                        query_id = query_db[0][-2]
+
+                        job = 0
+                        check_jobs = Scrapers.getScrapingJobsBySE(query_id, ts)
+                        count_jobs = check_jobs[0][0]
+                        if count_jobs == 0:
+                            job = 1
+
+                        if job == 1:
+                            for s in scrapers:
+                                if s.search_engine == ts:
+                                    generate_scraping_job(query_db[0], s)
 
 
 
@@ -221,9 +221,12 @@ try:
 
                             open_queries = Queries.getOpenQueriesStudybySE(study_id, ts)
 
+
+
                             if open_queries:
                                 random.shuffle(open_queries)
                                 o = open_queries[0]
+
 
 
                             if o:
