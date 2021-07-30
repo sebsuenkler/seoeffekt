@@ -7,7 +7,7 @@ from include import *
 
 job_defaults = {
     'coalesce': False,
-    'max_instances': 3
+    'max_instances': 10
 }
 
 def job():

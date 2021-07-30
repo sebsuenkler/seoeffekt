@@ -51,7 +51,7 @@ class Evaluations:
 
         #sql = "SELECT results_hash, results_url, results_main, sources_speed FROM results left join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash JOIN evaluations ON results_hash = evaluations_results_hash WHERE classifications_hash IS NULL AND sources_speed IS NOT NULL GROUP BY 1,2,3,4 HAVING COUNT(evaluations_module) >= %s"
 
-        sql = "SELECT results_hash, results_url, results_main, sources_speed FROM results TABLESAMPLE SYSTEM_ROWS(10000) left join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash JOIN evaluations ON results_hash = evaluations_results_hash WHERE classifications_hash IS NULL AND sources_speed IS NOT NULL GROUP BY 1,2,3,4 HAVING COUNT(evaluations_module) >= %s"
+        sql = "SELECT results_hash, results_url, results_main, sources_speed FROM results left join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash JOIN evaluations ON results_hash = evaluations_results_hash WHERE classifications_hash IS NULL AND sources_speed IS NOT NULL GROUP BY 1,2,3,4 HAVING COUNT(DISTINCT(evaluations_module)) >= %s"
         data = (indicators)
         cursor.execute(sql,(data,))
         rows = cursor.fetchall()
@@ -68,7 +68,7 @@ class Evaluations:
 
         #sql = "SELECT results_hash, results_url, results_main, sources_speed FROM results left join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash JOIN evaluations ON results_hash = evaluations_results_hash WHERE classifications_hash IS NULL AND sources_speed IS NOT NULL GROUP BY 1,2,3,4 HAVING COUNT(evaluations_module) >= %s"
 
-        sql = "SELECT classifications_hash, results_url, results_main, sources_speed FROM results TABLESAMPLE SYSTEM_ROWS(10000) join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash WHERE classifications_classification = %s AND classifications_result = %s GROUP BY 1,2,3,4"
+        sql = "SELECT classifications_hash, results_url, results_main, sources_speed FROM results join classifications on results_hash = classifications_hash JOIN sources ON sources_hash = results_hash WHERE classifications_classification = %s AND classifications_result = %s GROUP BY 1,2,3,4"
         data = (classifier_id, classifier_result)
         cursor.execute(sql,(data))
         rows = cursor.fetchall()
@@ -89,8 +89,11 @@ class Evaluations:
         rows = cursor.fetchall()
         return rows
 
-
-
+    def getEvaluationModules(cursor):
+        sql = "SELECT DISTINCT(evaluations_module) FROM evaluations"
+        cursor.execute(sql)
+        rows = cursor.fetchall()
+        return rows
 
 
 #write to db

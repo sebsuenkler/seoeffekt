@@ -5,10 +5,13 @@ import sys
 sys.path.insert(0, '..')
 from include import *
 
+Evaluations.deleteDuplicates()
+
 #folder to store the interim results
 tmp = 'tmp/'
 
-'''
+
+
 #Calculate the offset
 
 db = DB()
@@ -467,7 +470,7 @@ results_speed_evaluations_queries_classifications_merged.to_csv(r'seo_results.cs
 print("Finished")
 print("\n")
 
-'''
+
 
 #script to save results as readable table in a csv file
 tools = ['tools analytics', 'tools caching', 'tools seo', 'tools content', 'tools social', 'tools ads']

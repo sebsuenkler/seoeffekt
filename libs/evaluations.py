@@ -103,6 +103,12 @@ class Evaluations:
         db.DBDisconnect()
         return rows
 
+    def getEvaluationModules():
+        db = DB()
+        rows = DB_Evaluations.getEvaluationModules(db.cursor)
+        db.DBDisconnect()
+        return rows
+        
 #write to db
 
 #insert indicators, results of url categories and plugins evaluations to the table

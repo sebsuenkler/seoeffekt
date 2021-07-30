@@ -11,7 +11,6 @@ from include import *
 
 def classify(classifier_id, hashes):
 
-
     #functions to check the usage of titles in the document
 
     for h in hashes:
@@ -33,6 +32,9 @@ def classify(classifier_id, hashes):
             dict_results.update({evaluations_module: evaluations_result})
 
         
+
+        #print(dict_results)
+
         #convert dict elements for rule based classification
 
         #sources:
@@ -69,6 +71,7 @@ def classify(classifier_id, hashes):
         tools_ads = int(dict_results['tools ads count'])
 
         #classification
+        classification_count = 0
         not_optimized = 0
         optimized = 0
         probably_optimized = 0
@@ -79,27 +82,25 @@ def classify(classifier_id, hashes):
         if source_not_optimized == 1:
             not_optimized = 1
             classification_result = 'not optimized'
+            classification_count += 1
 
         #most probably optimized
         if not_optimized == 0 and (tools_seo > 0 or source_known == 1 or source_news == 1 or source_ads == 1 or indicator_micros > 0):
             optimized = 1
             classification_result = 'optimized'
-
+            classification_count += 1
 
         #probably optimized
-        if optimized == 0 and not_optimized == 0 and (tools_analytics > 0 or source_shop == 1 or source_company == 1 or indicator_viewport == 1 or indicator_robots_txt == 1 or indicator_sitemap == 1 or indicator_nofollow > 0 or indicator_canonical > 0 or (indicator_speed < 3 and indicator_speed > 0)):
+        if optimized == 0 and not_optimized == 0 and (tools_analytics > 0 or source_shop == 1 or source_company == 1 or indicator_https == 1 or indicator_og == 1 or indicator_viewport == 1 or indicator_robots_txt == 1 or indicator_sitemap == 1 or indicator_nofollow > 0 or indicator_canonical > 0 or (indicator_speed < 3 and indicator_speed > 0)):
             probably_optimized = 1
             classification_result = 'probably_optimized'
-
+            classification_count += 1
 
         #probably_not_optimized
-        if optimized == 0 and not_optimized == 0 and (indicator_title == 0 or indicator_description == 0 or indicator_speed > 60):
+        if optimized == 0 and not_optimized == 0 and (indicator_title == 0 or indicator_description == 0 or indicator_identical_title == 1 or indicator_og != 1 or indicator_speed > 60):
                 probably_not_optimized = 1
                 classification_result = 'probably_not_optimized'
-
-
-        if '.pdf' in results_url:
-            classification_result = 'PDF'
+                classification_count += 1
 
         Evaluations.updateClassificationResult(hash, classification_result, classifier_id, today)
 

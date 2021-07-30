@@ -15,14 +15,17 @@ try:
 
     classifier = array['classifier']
 
+
     hashes_check = []
 
-    hashes = Evaluations.getResultstoClassify(number_indicators)
+    evaluations_modules = Evaluations.getEvaluationModules()
+
+    number_of_indicators = len(evaluations_modules)
+
+    hashes = Evaluations.getResultstoClassify(number_of_indicators)
 
     if(Evaluations.getUnassigned()):
         hashes_check = Evaluations.getResultstoClassifyCheck()
-
-
 
 
     #classify results using all available classifiers
@@ -30,7 +33,7 @@ try:
         classifier_id = c
         classification_result = "unassigned"
         Evaluations.deleteDupClassifiedData()
-        Evaluations.deleteDuplicates()
+
 
         if(hashes):
             for h in hashes:
@@ -39,6 +42,7 @@ try:
                     Evaluations.insertClassificationResult(hash, classification_result, classifier_id, today)
                     #print(hash)
                     #print(classification_result)
+
 
         if(hashes_check):
             for hc in hashes_check:
@@ -49,6 +53,8 @@ try:
                         Evaluations.insertClassificationResult(hash, classification_result, classifier_id, today)
                         #print(hash)
                         #print(classification_result)
+
+
 
 
         hashes_to_classify = Evaluations.getResultstoUpdateClassification(classifier_id, classification_result)
@@ -62,6 +68,7 @@ try:
 
 except Exception as e:
     print(e)
+    print('error')
 
 else:
     exit()

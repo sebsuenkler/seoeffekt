@@ -10,7 +10,7 @@ today = date.today()
 
 def og(hash, code):
     module = 'check og'
-    pattern = '*meta*og:*'
+    pattern = '*og:*'
     value = '0'
 
     if Helpers.matchText(code, pattern):

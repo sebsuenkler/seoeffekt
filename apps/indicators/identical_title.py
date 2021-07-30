@@ -6,11 +6,12 @@ sys.path.insert(0, '..')
 from include import *
 
 def identical_title(hash, result_main):
+    print("identical_title")
 
     def check_identical_title(hash, result_main):
 
-
         def check_title(tree):
+
 
             title = ""
 
@@ -30,7 +31,6 @@ def identical_title(hash, result_main):
                 else:
                     title = check_title
 
-                title = title[2:-2]
 
                 title = title.replace("'", "")
                 title = title.replace('"', "")
@@ -38,6 +38,8 @@ def identical_title(hash, result_main):
                 title = title.replace(',', "")
 
                 title = title.strip()
+
+                print(title)
 
 
             return title
@@ -56,18 +58,20 @@ def identical_title(hash, result_main):
 
         for l in list_results_urls:
             url_split = l.split("   ")
-            try:
-                if result_main in url_split[1]:
-                    if not Helpers.matchText(url_split[1], '*javascript*') and not Helpers.matchText(url_split[1], '*None*') and url_split[1] != result_main and Helpers.validate_url(url_split[1]):
-                        results_links.append(url_split[1])
-            except:
-                pass
+            if len(url_split) == 2:
+                try:
+                    if result_main in url_split[1]:
+                        if not Helpers.matchText(url_split[1], '*javascript*') and not Helpers.matchText(url_split[1], '*None*') and url_split[1] != result_main and Helpers.validate_url(url_split[1]):
+                            results_links.append(url_split[1])
+                except:
+                    pass
+
+
 
 
         results_links = list(dict.fromkeys(results_links))
 
-
-        number_of_links = 5
+        number_of_links = 3
         n = 0
 
         if len(results_links) < number_of_links:
@@ -83,9 +87,12 @@ def identical_title(hash, result_main):
         identical_title_num = 0
 
 
-        while n < number_of_links and number_of_links < 10:
+        while n < number_of_links:
+
             url_to_check = results_links[n]
+
             print(url_to_check)
+
             n+=1
             try:
                 source = Results.saveResult(url_to_check)
@@ -103,11 +110,16 @@ def identical_title(hash, result_main):
             except:
                 number_of_links += 1
 
+        if identical_title_num > 0:
+            value = '1'
+        else:
+            value = '0'
 
-        return identical_title_num
+        return value
 
 
     module = "check identical title"
     value = check_identical_title(hash, result_main)
+    print("identical:")
+    print(value)
     check_evaluations_result(hash, module, value)
-    exit()

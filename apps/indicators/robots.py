@@ -8,6 +8,8 @@ from include import *
 
 def robots(hash, result_main, main_hash):
 
+    #print("robots")
+
 
     def get_results_main_hash(main_hash):
         hashes = Results.getResultHashesOnMain(main_hash)
@@ -15,6 +17,7 @@ def robots(hash, result_main, main_hash):
 
 
     robots_url = result_main+'robots.txt'
+
     module = 'robots_txt'
 
     res_hashes = get_results_main_hash(main_hash)
@@ -24,6 +27,8 @@ def robots(hash, result_main, main_hash):
         try:
             source = Results.saveResult(robots_url)
             s = source.lower()
+
+            #print(s)
 
             value = '0'
 
@@ -46,6 +51,10 @@ def robots(hash, result_main, main_hash):
                 value = '1'
 
             p = "*noindex*"
+            if Helpers.matchText(s, p):
+                value = '1'
+
+            p = "*seo*"
             if Helpers.matchText(s, p):
                 value = '1'
 
