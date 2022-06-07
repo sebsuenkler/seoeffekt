@@ -1,3 +1,0 @@
-GUI in flask: work in progress
-
-GUI to save and load studies with metadata and search queries
